@@ -23,8 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-fntzh-tv^w*kynbmrsk)(e)0d54_oo)3-8qg+8@!s-q2$pvl&m'
-
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fntzh-tv^w*kynbmrsk)(e)0d54_oo)3-8qg+8@!s-q2$pvl&m')
 # Stripe API keys
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
