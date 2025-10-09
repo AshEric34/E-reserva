@@ -1,0 +1,83 @@
+<a href="{% url 'administrateur' %}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+</a>
+
+<div class="table-container">
+    <h2 class="section-title">Liste des Chauffeurs</h2>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+                <th>Email</th>
+                <th>CIN</th>
+                <th>Coopérative</th>
+                <th>Voiture</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chauffeur in chauffeurs %}
+            <tr>
+                <td>{{ chauffeur.nom }}</td>
+                <td>{{ chauffeur.prenom }}</td>
+                <td>{{ chauffeur.telephone }}</td>
+                <td>{{ chauffeur.email }}</td>
+                <td>{{ chauffeur.cin }}</td>
+                <td>{{ chauffeur.cooperative.nom }}</td>
+                <td>
+                    {% if chauffeur.voiture %}
+                        {{ chauffeur.voiture.marque }} ({{ chauffeur.voiture.matricule }})
+                    {% else %}
+                        <span class="badge warning">Aucune voiture</span>
+                    {% endif %}
+                </td>
+                <td class="action-buttons">
+                    <button class="btn btn-view" onclick="viewChauffeur({{ chauffeur.id }})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-edit" onclick="editChauffeur({{ chauffeur.id }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteChauffeur({{ chauffeur.id }})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center;">Aucun chauffeur trouvé</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function viewChauffeur(chauffeurId) {
+    window.location.href = `/admin/chauffeur/${chauffeurId}/`;
+}
+
+function editChauffeur(chauffeurId) {
+    window.location.href = `/admin/chauffeur/${chauffeurId}/edit/`;
+}
+
+function deleteChauffeur(chauffeurId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action est irréversible !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/chauffeur/${chauffeurId}/delete/`;
+        }
+    });
+}
+</script>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Réserver un taxi-brousse</h2>
+<form method="get" action="{% url 'voitures_disponibles' %}">
+    <label>Lieu de départ:</label>
+    <select name="depart">
+        {% for ville in villes %}
+            <option value="{{ ville.id }}">{{ ville.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Lieu de destination:</label>
+    <select name="destination">
+        {% for ville in villes %}
+            <option value="{{ ville.id }}">{{ ville.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Rechercher</button>
+</form>
+{% endblock %}

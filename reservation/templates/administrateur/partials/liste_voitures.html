@@ -1,0 +1,121 @@
+<div class="list-container">
+    <div class="list-header">
+        <h2 class="list-title">
+            <i class="fas fa-car"></i> Liste des Voitures ({{ voitures|length }})
+        </h2>
+        <div class="list-actions">
+            <input type="text" class="search-input search-voitures" placeholder="Rechercher une voiture...">
+            <button class="close-list" onclick="window.location.href='{% url 'administrateur' %}'">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Voiture</th>
+                <th>Détails</th>
+                <th>Coopérative</th>
+                <th>Chauffeur</th>
+                <th>Statistiques</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for voiture in voitures %}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        {% if voiture.photo %}
+                        <img src="{{ voiture.photo.url }}" alt="{{ voiture.marque }}" 
+                             style="width: 50px; height: 40px; border-radius: 6px; object-fit: cover;">
+                        {% else %}
+                        <div style="width: 50px; height: 40px; border-radius: 6px; background: var(--success-color); display: flex; align-items: center; justify-content: center; color: white;">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <strong>{{ voiture.marque }}</strong>
+                            <div style="font-size: 0.8rem; color: #6c757d;">{{ voiture.matricule }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span class="badge info">{{ voiture.place }} places</span>
+                        {% if voiture.categorie %}
+                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 2px;">
+                            {{ voiture.categorie.nom }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        {% if voiture.cooperative.photo %}
+                        <img src="{{ voiture.cooperative.photo.url }}" alt="{{ voiture.cooperative.nom }}" 
+                             style="width: 30px; height: 30px; border-radius: 6px; object-fit: cover;">
+                        {% endif %}
+                        <span>{{ voiture.cooperative.nom }}</span>
+                    </div>
+                </td>
+                <td>
+                    {% with chauffeur=voiture.chauffeurs.first %}
+                        {% if chauffeur %}
+                        <div>
+                            <strong>{{ chauffeur.prenom }} {{ chauffeur.nom }}</strong>
+                            <div style="font-size: 0.8rem; color: #6c757d;">
+                                {{ chauffeur.telephone }}
+                            </div>
+                        </div>
+                        {% else %}
+                        <span class="badge warning">Aucun chauffeur</span>
+                        {% endif %}
+                    {% endwith %}
+                </td>
+                <td>
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span class="badge secondary">{{ voiture.trajet_set.count }} trajets</span>
+                        <span class="badge info">{{ voiture.reservation_set.count }} réservations</span>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-car" style="font-size: 3rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                    <h3 style="color: #6c757d; margin-bottom: 10px;">Aucune voiture trouvée</h3>
+                    <p style="color: #6c757d;">Les coopératives peuvent ajouter des voitures depuis leur interface.</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function viewVoiture(voitureId) {
+    window.location.href = `/voiture/${voitureId}/detail/`;
+}
+
+function editVoiture(voitureId) {
+    window.location.href = `/voiture/${voitureId}/edit/`;
+}
+
+function deleteVoiture(voitureId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action supprimera également tous les trajets associés !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/voiture/${voitureId}/delete/`;
+        }
+    });
+}
+</script>

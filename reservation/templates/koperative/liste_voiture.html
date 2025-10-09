@@ -1,0 +1,828 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserveo - Espace Coopérative</title>
+  <style>
+    .search-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .search-bar {
+        background: transparent;
+        padding: 0;
+        border-radius: 10px;
+        margin-bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .search-bar input {
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        flex-grow: 1;
+        min-width: 180px;
+        transition: all 0.3s ease;
+      }
+      
+      .search-bar input:focus {
+        outline: none;
+        border-color: #1a2a6c;
+        box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
+      }
+
+      .search-button {
+        background: linear-gradient(to right, #1a2a6c, #b21f1f);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+      }
+
+      .search-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(26, 42, 108, 0.3);
+      }
+      
+      /* Résultats */
+      #resultats {
+        display: block !important;
+      }
+
+      .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+      }
+      
+      .container2 {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.5s ease forwards;
+      }
+      
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Carte de trajet améliorée */
+      .card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+      
+      .haut_cart {
+        display: flex;
+        padding: 1.2rem;
+        background: linear-gradient(135deg, #1a2a6c, #277DBE);
+        color: white;
+        align-items: center;
+      }
+      
+      .image {
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+      
+      .image img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+      
+      .kopera h3 {
+        font-size: 18px;
+        margin: 0;
+        color: #ffdd40;
+      }
+      
+      .para {
+        padding: 1.2rem;
+        flex-grow: 1;
+      }
+      
+      .para p {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      
+      .para p:last-child {
+        margin-bottom: 0;
+      }
+      
+      .card h2 {
+        background: #f8f9fa;
+        padding: 12px 1.2rem;
+        margin: 0;
+        font-size: 16px;
+        color: #1a2a6c;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .reserver {
+        background: linear-gradient(to right, #ffdd40, #ffa500);
+        color: #1a2a6c;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 1.2rem;
+        width: calc(100% - 2.4rem);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .reserver:hover {
+        background: linear-gradient(to right, #ffa500, #ffdd40);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      
+      .reserver:disabled {
+        background: #ccc;
+        color: #666;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+      
+      /* Message aucun résultat */
+      .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+        font-size: 1.1rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin: 20px 0;
+      }
+
+      .no-results h3 {
+        color: #1a2a6c;
+        margin-bottom: 1rem;
+      }
+      
+      /* Indicateur de chargement */
+      .loader {
+        display: none;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+        margin: 20px auto;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .card.unavailable {
+        opacity: 0.6;
+        filter: grayscale(70%);
+      }
+      
+      .availability-status {
+        padding: 8px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        text-align: center;
+        font-weight: bold;
+      }
+      
+      .available {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      
+      .unavailable-text {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      
+      .expired-text {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      /* Sections de bienvenue */
+      .welcome-section {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        margin: 30px 0;
+      }
+
+      .welcome-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+      }
+
+      .welcome-section p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+      }
+
+      .features {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+      }
+
+      .feature {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        width: 200px;
+        backdrop-filter: blur(10px);
+      }
+
+      .search-info {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+      }
+
+      .search-info img {
+        max-width: 300px;
+        margin-bottom: 20px;
+        opacity: 0.7;
+      }
+
+      .search-results-header {
+        text-align: center;
+        margin: 30px 0;
+        color: #333;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .search-bar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        .search-bar input {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+        
+        .results-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .haut_cart {
+          flex-direction: column;
+          text-align: center;
+        }
+        
+        .image {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+
+        .features {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .feature {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 0.5rem;
+        }
+        
+        .card {
+          border-radius: 8px;
+        }
+        
+        .para {
+          padding: 1rem;
+        }
+        
+        .reserver {
+          margin: 1rem;
+          width: calc(100% - 2rem);
+        }
+
+        .welcome-section {
+          padding: 40px 15px;
+        }
+
+        .welcome-section h2 {
+          font-size: 2rem;
+        }
+      }
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    <div class="search-container">
+      <div class="search-bar">
+        <input type="text" id="lieu_depart" placeholder="Lieu de départ" value="{{ request.GET.lieu_depart|default:'' }}">
+        <input type="text" id="lieu_destination" placeholder="Lieu de destination" value="{{ request.GET.lieu_destination|default:'' }}">
+        <input type="date" id="date_depart" value="{{ request.GET.date_depart|default:'' }}">
+      </div>
+    </div>
+  
+    <div id="resultats">
+      <!-- Section de bienvenue (visible seulement au début) -->
+      <div id="welcome-content" class="welcome-section">
+        <h2>Bienvenue dans l'Espace Coopérative</h2>
+        <p>Gérez et réservez des trajets pour vos clients</p>
+        <div class="features">
+          <div class="feature">
+            <h3>👥 Gestion clients</h3>
+            <p>Réservez facilement pour vos clients</p>
+          </div>
+          <div class="feature">
+            <h3>🚗 Trajets disponibles</h3>
+            <p>Consultez tous les trajets de votre coopérative</p>
+          </div>
+          <div class="feature">
+            <h3>📊 Gestion voiture & Chauffeur</h3>
+            <p>Faire des contoles sur vos voitures et votre chauffeur </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section d'information de recherche (visible seulement au début) -->
+      <div id="search-info-content" class="search-info">
+        <img src="{% static 'reservation/images/search-icon.png' %}" alt="Rechercher des trajets" onerror="this.style.display='none'">
+        <h3>Recherchez les trajets de votre coopérative</h3>
+        <p>Remplissez les champs ci-dessus pour trouver les trajets disponibles</p>
+        <p>Vous pouvez rechercher par lieu de départ, destination et date de voyage</p>
+      </div>
+
+      <!-- Loader -->
+      <div class="loader"></div>
+
+      <!-- Contenu des résultats de recherche -->
+      <div id="search-results">
+        {% if request.GET.lieu_depart or request.GET.lieu_destination or request.GET.date_depart %}
+          <div class="search-results-header">
+            <h3>Résultats de votre recherche</h3>
+            <p>
+              {% if request.GET.lieu_depart %}Départ: <strong>{{ request.GET.lieu_depart }}</strong>{% endif %}
+              {% if request.GET.lieu_destination %} | Destination: <strong>{{ request.GET.lieu_destination }}</strong>{% endif %}
+              {% if request.GET.date_depart %} | Date: <strong>{{ request.GET.date_depart }}</strong>{% endif %}
+            </p>
+          </div>
+
+          <div class="results-grid">
+            {% for item in trajets_infos %}
+              {# Vérifier l'état du trajet #}
+              {% now "Y-m-d H:i:s" as current_time %}
+              
+              {# Convertir la date et l'heure du trajet en objet datetime pour comparaison #}
+              {% with trajet_date_str=item.trajet.date_depart|add:" "|add:item.trajet.heure_depart %}
+              {% with trajet_datetime=trajet_date_str|parse_datetime %}
+              
+              {# Vérifier si le trajet est dans le futur #}
+              {% if trajet_datetime %}
+                {% if trajet_datetime > current_time %}
+                  {# Trajet futur - vérifier les places disponibles #}
+                  {% with places_disponibles=item.trajet|places_disponibles %}
+                  
+                  {% if places_disponibles <= 0 %}
+                    {# Trajet complet #}
+                    <div class="container2">
+                      <div class="grid">
+                        <div class="card unavailable">
+                          <div class="haut_cart">
+                            <div class="image">
+                              <img src="{{ item.voiture.photo.url }}" alt="Photo voiture" width="100">
+                            </div>
+                            <div class="kopera">
+                              <h3>{{ item.voiture.cooperative.nom }}</h3>
+                            </div>
+                          </div>
+                          <div class="para">
+                            <p><span>Date de Départ:</span> <span>{{ item.trajet.date_depart }}</span></p>
+                            <p><span>Heure de départ:</span> <span>{{ item.trajet.heure_depart }}</span></p>
+                            <p><span>Lieu de départ:</span> <span>{{ item.trajet.lieu_depart }}</span></p>
+                            <p><span>Destination:</span> <span>{{ item.trajet.lieu_destination }}</span></p>
+                            <p><span>Frais:</span> <span>{{ item.trajet.frais }} Ar</span></p>
+                            <p><span>Places disponibles:</span> <span>0</span></p>
+                            <p><span>Dernier voyage:</span> <span>{{ item.dernier_trajet|default:"-" }}</span></p>
+                            <p><span>Numéro du véhicule:</span> <span>{{ item.voiture.matricule }}</span></p>
+                            {% if item.chauffeur %}
+                            <p><span>Chauffeur:</span> <span>Mr {{ item.chauffeur.prenom }} {{ item.chauffeur.nom }}</span></p>
+                            <p><span>Téléphone:</span> <span>{{ item.chauffeur.telephone }}</span></p>
+                            {% else %}
+                            <p style="color: #ff6b6b;"><span>Aucun chauffeur associé</span></p>
+                            {% endif %}
+                          </div>
+                          <div class="availability-status unavailable-text">
+                            Complet - Plus de places disponibles
+                          </div>
+                          <h2>{{ item.voiture.categorie.nom }}</h2>
+                          <button class="reserver" disabled>Complet</button>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    {# Trajet disponible #}
+                    <div class="container2" style="animation-delay: {{ forloop.counter0|add:1|divisibleby:2|yesno:'0.1s,0.2s' }};">
+                      <div class="grid">
+                        <div class="card">
+                          <div class="haut_cart">
+                            <div class="image">
+                              <img src="{{ item.voiture.photo.url }}" alt="Photo voiture" width="100">
+                            </div>
+                            <div class="kopera">
+                              <h3>{{ item.voiture.cooperative.nom }}</h3>
+                            </div>
+                          </div>
+                          <div class="para">
+                            <p><span>Date de Départ:</span> <span>{{ item.trajet.date_depart }}</span></p>
+                            <p><span>Heure de départ:</span> <span>{{ item.trajet.heure_depart }}</span></p>
+                            <p><span>Lieu de départ:</span> <span>{{ item.trajet.lieu_depart }}</span></p>
+                            <p><span>Destination:</span> <span>{{ item.trajet.lieu_destination }}</span></p>
+                            <p><span>Frais:</span> <span>{{ item.trajet.frais }} Ar</span></p>
+                            <p><span>Places disponibles:</span> <span>{{ places_disponibles }}/{{ item.voiture.place }}</span></p>
+                            <p><span>Date dernier de son trajet:</span> <span>{{ item.dernier_trajet|default:"-" }}</span></p>
+                            <p><span>Numéro du véhicule:</span> <span>{{ item.voiture.matricule }}</span></p>
+                            {% if item.chauffeur %}
+                            <p><span>Chauffeur:</span> <span>Mr {{ item.chauffeur.prenom }} {{ item.chauffeur.nom }}</span></p>
+                            <p><span>Téléphone:</span> <span>{{ item.chauffeur.telephone }}</span></p>
+                            {% else %}
+                            <p style="color: #ff6b6b;"><span>Aucun chauffeur associé</span></p>
+                            {% endif %}
+                          </div>
+                          <div class="availability-status available">
+                            {{ places_disponibles }} place(s) disponible(s)
+                          </div>
+                          <h2>{{ item.voiture.categorie.nom }}</h2>
+                          <form method="get" action="{% url 'reserver' item.trajet.id %}">
+                            <button class="reserver" type="submit">Réserver pour un client</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                  
+                  {% endwith %}
+                
+                {% else %}
+                  {# Trajet passé - vérifier s'il a eu lieu il y a moins d'1 heure #}
+                  {% with time_diff=current_time|timesince:trajet_datetime %}
+                  {% with hours_diff=time_diff|slice:":2"|add:0 %}
+                  
+                  {% if hours_diff < 1 %}
+                    {# Trajet passé mais depuis moins d'1 heure - afficher comme non disponible #}
+                    <div class="container2">
+                      <div class="grid">
+                        <div class="card unavailable">
+                          <div class="haut_cart">
+                            <div class="image">
+                              <img src="{{ item.voiture.photo.url }}" alt="Photo voiture" width="100">
+                            </div>
+                            <div class="kopera">
+                              <h3>{{ item.voiture.cooperative.nom }}</h3>
+                            </div>
+                          </div>
+                          <div class="para">
+                            <p><span>Date de Départ:</span> <span>{{ item.trajet.date_depart }}</span></p>
+                            <p><span>Heure de départ:</span> <span>{{ item.trajet.heure_depart }}</span></p>
+                            <p><span>Lieu de départ:</span> <span>{{ item.trajet.lieu_depart }}</span></p>
+                            <p><span>Destination:</span> <span>{{ item.trajet.lieu_destination }}</span></p>
+                            <p><span>Frais:</span> <span>{{ item.trajet.frais }} Ar</span></p>
+                            <p><span>Dernier voyage:</span> <span>{{ item.dernier_trajet|default:"-" }}</span></p>
+                            <p><span>Statut:</span> <span>Terminé</span></p>
+                            <p><span>Numéro du véhicule:</span> <span>{{ item.voiture.matricule }}</span></p>
+                            {% if item.chauffeur %}
+                            <p><span>Chauffeur:</span> <span>Mr {{ item.chauffeur.prenom }} {{ item.chauffeur.nom }}</span></p>
+                            <p><span>Téléphone:</span> <span>{{ item.chauffeur.telephone }}</span></p>
+                            {% else %}
+                            <p style="color: #ff6b6b;"><span>Aucun chauffeur associé</span></p>
+                            {% endif %}
+                          </div>
+                          <div class="availability-status expired-text">
+                            Trajet terminé (il y a {{ time_diff }})
+                          </div>
+                          <h2>{{ item.voiture.categorie.nom }}</h2>
+                          <button class="reserver" disabled>Non disponible</button>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                  
+                  {% endwith %}
+                  {% endwith %}
+                {% endif %}
+              {% endif %}
+              
+              {% endwith %}
+              {% endwith %}
+            {% empty %}
+              <p class="no-results">Aucun trajet trouvé pour votre recherche.</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function debounce(func, delay) {
+      let timer;
+      return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+      };
+    }
+  
+    function rechercher() {
+      const depart = document.getElementById("lieu_depart").value;
+      const destination = document.getElementById("lieu_destination").value;
+      const date = document.getElementById("date_depart").value;
+      
+      // Construire l'URL avec les paramètres de recherche
+      const params = new URLSearchParams();
+      if (depart) params.append('lieu_depart', depart);
+      if (destination) params.append('lieu_destination', destination);
+      if (date) params.append('date_depart', date);
+      
+      // Recharger la page avec les paramètres de recherche
+      window.location.href = `${window.location.pathname}?${params.toString()}`;
+    }
+
+    function rechercherAJAX() {
+      const depart = document.getElementById("lieu_depart").value;
+      const destination = document.getElementById("lieu_destination").value;
+      const date = document.getElementById("date_depart").value;
+      
+      const loader = document.querySelector('.loader');
+      const welcomeContent = document.getElementById("welcome-content");
+      const searchInfoContent = document.getElementById("search-info-content");
+      
+      // Masquer le contenu de bienvenue si au moins un champ est rempli
+      if (depart || destination || date) {
+        if (welcomeContent) welcomeContent.style.display = 'none';
+        if (searchInfoContent) searchInfoContent.style.display = 'none';
+      } else {
+        if (welcomeContent) welcomeContent.style.display = 'block';
+        if (searchInfoContent) searchInfoContent.style.display = 'block';
+        document.getElementById("search-results").innerHTML = "";
+        return;
+      }
+      
+      // Afficher l'indicateur de chargement
+      loader.style.display = 'block';
+      
+      // Ajouter le paramètre cooperative_id pour filtrer par coopérative
+      fetch(`/recherche-cooperative/?lieu_depart=${depart}&lieu_destination=${destination}&date_depart=${date}`)
+        .then(response => response.json())
+        .then(data => {
+          // Masquer l'indicateur de chargement
+          loader.style.display = 'none';
+          
+          const searchResults = document.getElementById("search-results");
+          
+          if (data.trajets && data.trajets.length > 0) {
+            // Ajouter l'en-tête des résultats
+            let headerHTML = `<div class="search-results-header">
+              <h3>Résultats de votre recherche</h3>
+              <p>`;
+            
+            if (depart) headerHTML += `Départ: <strong>${depart}</strong>`;
+            if (destination) headerHTML += ` | Destination: <strong>${destination}</strong>`;
+            if (date) headerHTML += ` | Date: <strong>${date}</strong>`;
+            
+            headerHTML += `</p></div><div class="results-grid">`;
+            
+            let resultsHTML = headerHTML;
+            
+            data.trajets.forEach((item, index) => {
+              const maintenant = new Date();
+              const [jour, mois, annee] = item.date_depart.split('-');
+              const [heures, minutes] = item.heure_depart.split(':');
+              const trajetDate = new Date(annee, mois - 1, jour, heures, minutes);
+              
+              // Calculer la différence de temps en heures
+              const diffHeures = (maintenant - trajetDate) / (1000 * 60 * 60);
+              
+              if (trajetDate > maintenant) {
+                // Trajet futur
+                if (item.places_disponibles <= 0) {
+                  // Trajet complet
+                  resultsHTML += `
+                    <div class="container2">
+                      <div class="grid">
+                        <div class="card unavailable">
+                          <div class="haut_cart">
+                            <div class="image">
+                              <img src="${item.voiture.photo}" alt="Photo voiture" width="100">
+                            </div>
+                            <div class="kopera">
+                              <h3>${item.voiture.cooperative}</h3>
+                            </div>
+                          </div>
+                          <div class="para">
+                            <p><span>Date de Départ:</span> <span>${item.date_depart}</span></p>
+                            <p><span>Heure de départ:</span> <span>${item.heure_depart}</span></p>
+                            <p><span>Lieu de départ:</span> <span>${item.lieu_depart}</span></p>
+                            <p><span>Destination:</span> <span>${item.lieu_destination}</span></p>
+                            <p><span>Frais:</span> <span>${item.frais} Ar</span></p>
+                            <p><span>Places disponibles:</span> <span>0</span></p>
+                            <p><span>Dernier voyage:</span> <span>${item.dernier_trajet || "-"}</span></p>
+                            <p><span>Numéro du véhicule:</span> <span>${item.voiture.matricule}</span></p>
+                            ${item.chauffeur ? 
+                              `<p><span>Chauffeur:</span> <span>Mr ${item.chauffeur.prenom} ${item.chauffeur.nom}</span></p>
+                               <p><span>Téléphone:</span> <span>${item.chauffeur.telephone}</span></p>` 
+                              : `<p style="color: #ff6b6b;"><span>Aucun chauffeur associé</span></p>`
+                            }
+                          </div>
+                          <div class="availability-status unavailable-text">
+                            Complet - Plus de places disponibles
+                          </div>
+                          <h2>${item.voiture.categorie}</h2>
+                          <button class="reserver" disabled>Complet</button>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                } else {
+                  // Trajet disponible
+                  resultsHTML += `
+                    <div class="container2" style="animation-delay: ${index % 2 === 0 ? '0.1s' : '0.2s'};">
+                      <div class="grid">
+                        <div class="card">
+                          <div class="haut_cart">
+                            <div class="image">
+                              <img src="${item.voiture.photo}" alt="Photo voiture" width="100">
+                            </div>
+                            <div class="kopera">
+                              <h3>${item.voiture.cooperative}</h3>
+                            </div>
+                          </div>
+                          <div class="para">
+                            <p><span>Date de Départ:</span> <span>${item.date_depart}</span></p>
+                            <p><span>Heure de départ:</span> <span>${item.heure_depart}</span></p>
+                            <p><span>Lieu de départ:</span> <span>${item.lieu_depart}</span></p>
+                            <p><span>Destination:</span> <span>${item.lieu_destination}</span></p>
+                            <p><span>Frais:</span> <span>${item.frais} Ar</span></p>
+                            <p><span>Places disponibles:</span> <span>${item.places_disponibles}/${item.voiture.place}</span></p>
+                            <p><span>Dernier voyage:</span> <span>${item.dernier_trajet || "-"}</span></p>
+                            <p><span>Numéro du véhicule:</span> <span>${item.voiture.matricule}</span></p>
+                            ${item.chauffeur ? 
+                              `<p><span>Chauffeur:</span> <span>Mr ${item.chauffeur.prenom} ${item.chauffeur.nom}</span></p>
+                               <p><span>Téléphone:</span> <span>${item.chauffeur.telephone}</span></p>` 
+                              : `<p style="color: #ff6b6b;"><span>Aucun chauffeur associé</span></p>`
+                            }
+                          </div>
+                          <div class="availability-status available">
+                            ${item.places_disponibles} place(s) disponible(s)
+                          </div>
+                          <h2>${item.voiture.categorie}</h2>
+                          <form method="get" action="/reserver/${item.id}">
+                            <button class="reserver" type="submit">Réserver pour un client</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }
+              } else if (diffHeures < 1) {
+                // Trajet passé mais depuis moins d'1 heure
+                const minutesEcoulees = Math.floor(diffHeures * 60);
+                resultsHTML += `
+                  <div class="container2">
+                    <div class="grid">
+                      <div class="card unavailable">
+                        <div class="haut_cart">
+                          <div class="image">
+                            <img src="${item.voiture.photo}" alt="Photo voiture" width="100">
+                          </div>
+                          <div class="kopera">
+                            <h3>${item.voiture.cooperative}</h3>
+                          </div>
+                        </div>
+                        <div class="para">
+                          <p><span>Date de Départ:</span> <span>${item.date_depart}</span></p>
+                          <p><span>Heure de départ:</span> <span>${item.heure_depart}</span></p>
+                          <p><span>Lieu de départ:</span> <span>${item.lieu_depart}</span></p>
+                          <p><span>Destination:</span> <span>${item.lieu_destination}</span></p>
+                          <p><span>Frais:</span> <span>${item.frais} Ar</span></p>
+                          <p><span>Statut:</span> <span>Terminé</span></p>
+                          <p><span>Dernier voyage:</span> <span>${item.dernier_trajet || "-"}</span></p>
+                          <p><span>Numéro du véhicule:</span> <span>${item.voiture.matricule}</span></p>
+                          ${item.chauffeur ? 
+                            `<p><span>Chauffeur:</span> <span>Mr ${item.chauffeur.prenom} ${item.chauffeur.nom}</span></p>
+                             <p><span>Téléphone:</span> <span>${item.chauffeur.telephone}</span></p>` 
+                            : `<p style="color: #ff6b6b;"><span>Aucun chauffeur associé</span></p>`
+                          }
+                        </div>
+                        <div class="availability-status expired-text">
+                          Trajet terminé (il y a ${minutesEcoulees} minutes)
+                        </div>
+                        <h2>${item.voiture.categorie}</h2>
+                        <button class="reserver" disabled>Non disponible</button>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
+            });
+            
+            resultsHTML += `</div>`;
+            searchResults.innerHTML = resultsHTML;
+            
+          } else {
+            let noResultsHTML = `<div class="search-results-header">
+              <h3>Résultats de votre recherche</h3>
+              <p>`;
+            
+            if (depart) noResultsHTML += `Départ: <strong>${depart}</strong>`;
+            if (destination) noResultsHTML += ` | Destination: <strong>${destination}</strong>`;
+            if (date) noResultsHTML += ` | Date: <strong>${date}</strong>`;
+            
+            noResultsHTML += `</p></div>
+            <p class='no-results'>Aucun trajet trouvé pour votre recherche</p>`;
+            
+            searchResults.innerHTML = noResultsHTML;
+          }
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          loader.style.display = 'none';
+          document.getElementById("search-results").innerHTML = "<p class='no-results'>Une erreur s'est produite lors de la recherche</p>";
+        });
+    }
+  
+    const searchInputs = document.querySelectorAll("#lieu_depart, #lieu_destination, #date_depart");
+    searchInputs.forEach(input => {
+      input.addEventListener("input", debounce(rechercherAJAX, 400));
+      input.addEventListener("change", debounce(rechercherAJAX, 400));
+    });
+    
+    // Masquer le contenu de bienvenue si des paramètres de recherche sont présents au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const depart = urlParams.get('lieu_depart');
+      const destination = urlParams.get('lieu_destination');
+      const date = urlParams.get('date_depart');
+      
+      if (depart || destination || date) {
+        const welcomeContent = document.getElementById("welcome-content");
+        const searchInfoContent = document.getElementById("search-info-content");
+        if (welcomeContent) welcomeContent.style.display = 'none';
+        if (searchInfoContent) searchInfoContent.style.display = 'none';
+      }
+      
+      document.getElementById('lieu_depart').focus();
+    });
+  </script>
+</body>
+</html>

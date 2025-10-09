@@ -1,0 +1,93 @@
+
+<a href="{% url 'administrateur' %}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+</a>
+
+<div class="table-container">
+    <h2 class="section-title">Liste des Utilisateurs</h2>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Nom complet</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Date d'inscription</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in utilisateurs %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>
+                    {% if user.utilisateur %}
+                        {{ user.utilisateur.nom }} {{ user.utilisateur.prenom }}
+                    {% else %}
+                        Non spécifié
+                    {% endif %}
+                </td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if user.utilisateur %}
+                        {{ user.utilisateur.telephone }}
+                    {% else %}
+                        Non spécifié
+                    {% endif %}
+                </td>
+                <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                <td>
+                    <span class="badge {% if user.is_active %}success{% else %}warning{% endif %}">
+                        {{ user.is_active|yesno:"Actif,Inactif" }}
+                    </span>
+                </td>
+                <td class="action-buttons">
+                    <button class="btn btn-view" onclick="viewUser({{ user.id }})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-edit" onclick="editUser({{ user.id }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteUser({{ user.id }})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center;">Aucun utilisateur trouvé</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function viewUser(userId) {
+    window.location.href = `/admin/user/${userId}/`;
+}
+
+function editUser(userId) {
+    window.location.href = `/admin/user/${userId}/edit/`;
+}
+
+function deleteUser(userId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action est irréversible !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Ici vous pouvez ajouter la logique de suppression AJAX
+            window.location.href = `/admin/user/${userId}/delete/`;
+        }
+    });
+}
+</script>

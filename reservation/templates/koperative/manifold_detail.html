@@ -1,0 +1,391 @@
+{% extends "koperative/index.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Manifold - Détail</title>
+    <style>
+        .manifold-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        .manifold-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #000;
+        }
+
+        .manifold-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .cooperative-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* Section horizontale compacte pour les informations */
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 10px;
+            padding: 0 10px;
+        }
+
+        .info-column {
+            flex: 1;
+            padding: 0 5px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .info-value {
+            text-align: right;
+            white-space: nowrap;
+            margin-left: 8px;
+        }
+
+        .action-section {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: 1px solid #333;
+            background-color: #fff;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #555;
+        }
+
+        .passengers-section {
+            margin-top: 15px;
+        }
+
+        .section-title-large {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #000;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            border: 1px solid #000;
+            padding: 6px 4px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        td {
+            border: 1px solid #ccc;
+            padding: 4px 3px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 15px;
+            border: 1px dashed #ccc;
+            margin-top: 10px;
+        }
+
+        .empty-state p {
+            margin-bottom: 8px;
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        .manifold-footer {
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #000;
+            text-align: center;
+            font-size: 9px;
+        }
+
+        /* Classes pour contrôler l'affichage dans le PDF */
+        .no-pdf {
+            /* Éléments à cacher dans le PDF */
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .manifold-container {
+                padding: 10px;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            table {
+                font-size: 9px;
+            }
+            
+            th, td {
+                padding: 3px 2px;
+            }
+            
+            .action-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenu principal pour le PDF -->
+    <div class="manifold-container" id="manifold-content">
+        <div class="manifold-header">
+            <div class="manifold-title">MANIFOLD</div>
+            <div class="cooperative-name">{{ manifold.trajet.voiture.cooperative.nom }}</div>
+        </div>
+
+        <!-- Section horizontale des informations -->
+        <div class="header-info">
+            <!-- Colonne de gauche : Informations du trajet -->
+            <div class="info-column">
+                <div class="info-row">
+                    <span class="info-label">Départ:</span>
+                    <span class="info-value">{{ manifold.trajet.lieu_depart }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Destination:</span>
+                    <span class="info-value">{{ manifold.trajet.lieu_destination }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">{{ manifold.trajet.date_depart }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Heure:</span>
+                    <span class="info-value">{{ manifold.trajet.heure_depart }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Frais:</span>
+                    <span class="info-value">{{ manifold.trajet.frais }}</span>
+                </div>
+            </div>
+
+            <!-- Colonne du milieu : Véhicule -->
+            <div class="info-column">
+                <div class="info-row">
+                    <span class="info-label">Véhicule:</span>
+                    <span class="info-value">{{ manifold.trajet.voiture.matricule }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Marque:</span>
+                    <span class="info-value">{{ manifold.trajet.voiture.marque }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Places:</span>
+                    <span class="info-value">{{ manifold.trajet.voiture.place }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Catégorie:</span>
+                    <span class="info-value">{{ manifold.trajet.voiture.categorie.nom }}</span>
+                </div>
+            </div>
+
+            <!-- Colonne de droite : Chauffeur -->
+            <div class="info-column">
+                {% if chauffeur %}
+                <div class="info-row">
+                    <span class="info-label">Chauffeur:</span>
+                    <span class="info-value">{{ chauffeur.prenom }} {{ chauffeur.nom }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Téléphone:</span>
+                    <span class="info-value">{{ chauffeur.telephone }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">CIN:</span>
+                    <span class="info-value">{{ chauffeur.cin }}</span>
+                </div>
+                {% else %}
+                <div class="info-row">
+                    <span class="info-label">Chauffeur:</span>
+                    <span class="info-value" style="color: #dc3545;">Non assigné</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Section des boutons - cachée dans le PDF -->
+        <div class="action-section no-pdf">
+            <a href="{% url 'creer_manifold' manifold.trajet.id %}" class="btn">
+                <span>➕</span> Ajouter un passager
+            </a>
+            <button onclick="generatePDF()" class="btn btn-primary">
+                <span>📄</span> Télécharger PDF
+            </button>
+        </div>
+
+        <!-- Section principale : Tableau des passagers -->
+        <div class="passengers-section">
+            <div class="section-title-large">LISTE DES PASSAGERS</div>
+            
+            {% if passagers %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Date Naissance</th>
+                        <th>CIN</th>
+                        <th>N° Famille</th>
+                        <th>N° Utilisateur</th>
+                        <th>Place</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in passagers %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ p.nom }}</td>
+                        <td>{{ p.prenom }}</td>
+                        <td>{{ p.date_naissance|date:"d/m/Y" }}</td>
+                        <td>{{ p.cin|default:"-" }}</td>
+                        <td>{{ p.numero_famille|default:"-" }}</td>
+                        <td>{{ p.numero_utilisateur|default:"-" }}</td>
+                        <td>{{ p.numero_places }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <p>Aucun passager enregistré pour ce manifold.</p>
+                <!-- Bouton caché dans le PDF -->
+                <a href="{% url 'creer_manifold' manifold.trajet.id %}" class="btn no-pdf">
+                    Ajouter le premier passager
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="manifold-footer">
+            Document généré le {% now "d/m/Y à H:i" %}
+        </div>
+    </div>
+
+    <!-- Script pour générer le PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function generatePDF() {
+            const element = document.getElementById('manifold-content');
+            
+            const options = {
+                margin: 8,
+                filename: 'manifold_{{ manifold.trajet.lieu_depart }}_{{ manifold.trajet.lieu_destination }}_{{ manifold.trajet.date_depart }}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'landscape'
+                }
+            };
+
+            const elementClone = element.cloneNode(true);
+            
+            // Appliquer les styles critiques
+            elementClone.style.backgroundColor = '#ffffff';
+            elementClone.style.color = '#000000';
+            
+            // S'assurer que tout est visible
+            const criticalElements = elementClone.querySelectorAll('.manifold-header, .header-info, .passengers-section');
+            criticalElements.forEach(el => {
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+                el.style.opacity = '1';
+            });
+            
+            // Supprimer les éléments à cacher
+            const noPdfElements = elementClone.querySelectorAll('.no-pdf');
+            noPdfElements.forEach(el => el.remove());
+
+            html2pdf().set(options).from(elementClone).save();
+        }
+    </script>
+</body>
+</html>
+{% endblock content %}

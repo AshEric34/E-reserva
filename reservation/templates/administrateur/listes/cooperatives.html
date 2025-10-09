@@ -1,0 +1,77 @@
+<a href="{% url 'administrateur' %}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+</a>
+
+<div class="table-container">
+    <h2 class="section-title">Liste des Coopératives</h2>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Téléphone</th>
+                <th>Email</th>
+                <th>Date de création</th>
+                <th>Nombre de voitures</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cooperative in cooperatives %}
+            <tr>
+                <td>{{ cooperative.nom }}</td>
+                <td>{{ cooperative.adresse }}</td>
+                <td>{{ cooperative.telephone }}</td>
+                <td>{{ cooperative.email }}</td>
+                <td>{{ cooperative.utilisateur.date_joined|date:"d/m/Y" }}</td>
+                <td>
+                    <span class="badge info">{{ cooperative.voiture_set.count }}</span>
+                </td>
+                <td class="action-buttons">
+                    <button class="btn btn-view" onclick="viewCooperative({{ cooperative.id }})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-edit" onclick="editCooperative({{ cooperative.id }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteCooperative({{ cooperative.id }})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center;">Aucune coopérative trouvée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function viewCooperative(coopId) {
+    window.location.href = `/admin/cooperative/${coopId}/`;
+}
+
+function editCooperative(coopId) {
+    window.location.href = `/admin/cooperative/${coopId}/edit/`;
+}
+
+function deleteCooperative(coopId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action supprimera également toutes les voitures associées !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/cooperative/${coopId}/delete/`;
+        }
+    });
+}
+</script>

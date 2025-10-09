@@ -1,0 +1,382 @@
+{% extends "koperative/index.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    /* Your existing styles remain the same */
+    .form-container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px;
+        background: linear-gradient(135deg, #1a2a6c, #195c68);
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .form-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: pulse 15s infinite linear;
+        z-index: 0;
+    }
+    
+    @keyframes pulse {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-header h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: #ffdd40;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .form-header p {
+        color: #ccc;
+        font-size: 16px;
+    }
+    
+    .form-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        flex: 1;
+        min-width: 250px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #ffdd40;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-group label i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 14px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    .form-group select{
+        width: 100%;
+        padding: 14px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        color: blue;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #ffdd40;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 0 15px rgba(255, 221, 64, 0.3);
+    }
+    
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(to right, #ffdd40, #ffa500);
+        color: #1a2a6c;
+        border: none;
+        padding: 16px 30px;
+        font-size: 18px;
+        border-radius: 50px;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .submit-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: 0.5s;
+    }
+    
+    .submit-btn:hover::before {
+        left: 100%;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(to right, #ffa500, #ffdd40);
+    }
+    
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+    
+    .submit-btn i {
+        margin-right: 10px;
+    }
+    
+    /* Styles pour les erreurs */
+    .error-list {
+        background: rgba(178, 34, 34, 0.2);
+        border-left: 4px solid #ffdd40;
+        color: #ffdd40;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        animation: shake 0.5s ease;
+    }
+    
+    .error-list ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+    
+    .error-list li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .error-list li::before {
+        content: '⚠️';
+        margin-right: 10px;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-8px); }
+        40%, 80% { transform: translateX(8px); }
+    }
+    
+    /* Styles pour les champs avec icônes */
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #ffdd40;
+        font-size: 18px;
+    }
+    
+    .input-with-icon input,
+    .input-with-icon select,
+    .input-with-icon textarea {
+        padding-left: 45px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-container {
+            margin: 20px;
+            padding: 20px;
+        }
+        
+        .form-row {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            min-width: 100%;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h2><i class="fas fa-user-tie"></i> Gestion des Chauffeurs</h2>
+        <p>Ajouter ou modifier les informations d'un chauffeur</p>
+    </div>
+    
+    <div class="form-content">
+        {% if form.errors %}
+        <div class="error-list">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }} : {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" id="chauffeur-form">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_voiture"><i class="fas fa-car"></i> Voiture</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        {{ form.voiture }}
+                    </div>
+                </div>
+                
+               
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_nom"><i class="fas fa-signature"></i> Nom</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-signature"></i>
+                        </div>
+                        {{ form.nom }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_prenom"><i class="fas fa-signature"></i> Prénom</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-signature"></i>
+                        </div>
+                        {{ form.prenom }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_telephone"><i class="fas fa-phone"></i> Téléphone</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        {{ form.telephone }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_email"><i class="fas fa-envelope"></i> Email</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        {{ form.email }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_cin"><i class="fas fa-id-card"></i> CIN</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        {{ form.cin }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_date_naissance"><i class="fas fa-birthday-cake"></i> Date de naissance</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        {{ form.date_naissance }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_lieu_naissance"><i class="fas fa-map-marker-alt"></i> Lieu de naissance</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        {{ form.lieu_naissance }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_photo"><i class="fas fa-camera"></i> Photo</label>
+                    <div class="input-with-icon">
+                        <div class="input-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        {{ form.photo }}
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> Enregistrer le chauffeur
+            </button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Font Awesome pour les icônes -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+{% endblock content %}

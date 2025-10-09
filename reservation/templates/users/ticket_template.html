@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        .ticket { border: 2px solid #000; padding: 15px; max-width: 400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 15px; }
+        .section { margin-bottom: 10px; padding: 8px; border: 1px solid #ddd; }
+        .section-title { font-weight: bold; margin-bottom: 5px; }
+        .info-row { margin-bottom: 3px; }
+        .place { display: inline-block; padding: 3px 6px; margin: 2px; background: #eee; border: 1px solid #ccc; }
+        .qr-code { text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="ticket">
+        <div class="header">
+            <h2>VOYAGE EXPRESS</h2>
+            <h3>TICKET DE RÉSERVATION</h3>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">INFORMATIONS PASSAGER</div>
+            <div class="info-row">
+                <strong>Nom complet:</strong> 
+                {% if reservation.utilisateur %}
+                    {{ reservation.utilisateur.get_full_name|default:reservation.utilisateur.username }}
+                {% else %}
+                    {{ reservation.nom_client }} {{ reservation.prenom_client }}
+                {% endif %}
+            </div>
+            <div class="info-row">
+                <strong>Référence:</strong> REF-{{ reservation.id|stringformat:"06d" }}
+            </div>
+            <div class="info-row">
+                <strong>Date d'émission:</strong> {{ reservation.date_reservation|date:"d/m/Y à H:i" }}
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">INFORMATIONS TRAJET</div>
+            <div class="info-row"><strong>Départ:</strong> {{ reservation.trajet.lieu_depart }}</div>
+            <div class="info-row"><strong>Destination:</strong> {{ reservation.trajet.lieu_destination }}</div>
+            <div class="info-row"><strong>Date:</strong> {{ reservation.trajet.date_depart|date:"d/m/Y" }}</div>
+            <div class="info-row"><strong>Heure:</strong> {{ reservation.trajet.heure_depart|date:"H:i" }}</div>
+            <div class="info-row"><strong>Voiture:</strong> {{ reservation.trajet.voiture.marque }} ({{ reservation.trajet.voiture.matricule }})</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">DÉTAILS RÉSERVATION</div>
+            <div class="info-row"><strong>Places réservées:</strong> {{ reservation.nb_place_reserve }}</div>
+            <div class="info-row"><strong>Montant payé:</strong> {{ reservation.montant_total }} Ar</div>
+            
+            {% if places %}
+            <div class="info-row"><strong>Numéros de place:</strong></div>
+            <div>
+                {% for place in places %}
+                <span class="place">{{ place }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="qr-code">
+            <div>Code QR de vérification</div>
+            <img src="data:image/png;base64,{{ qr_code_data }}" width="100" height="100">
+        </div>
+    </div>
+</body>
+</html>

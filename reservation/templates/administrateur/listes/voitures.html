@@ -1,0 +1,93 @@
+<a href="{% url 'administrateur' %}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+</a>
+
+<div class="table-container">
+    <h2 class="section-title">Liste des Voitures</h2>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Marque</th>
+                <th>Matricule</th>
+                <th>Places</th>
+                <th>Catégorie</th>
+                <th>Coopérative</th>
+                <th>Chauffeur</th>
+                <th>Trajets actifs</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for voiture in voitures %}
+            <tr>
+                <td>{{ voiture.marque }}</td>
+                <td>{{ voiture.matricule }}</td>
+                <td>
+                    <span class="badge info">{{ voiture.place }} places</span>
+                </td>
+                <td>
+                    {% if voiture.categorie %}
+                        {{ voiture.categorie.nom }}
+                    {% else %}
+                        <span class="badge warning">Non spécifiée</span>
+                    {% endif %}
+                </td>
+                <td>{{ voiture.cooperative.nom }}</td>
+                <td>
+                    {% if voiture.chauffeurs.first %}
+                        {{ voiture.chauffeurs.first.nom }} {{ voiture.chauffeurs.first.prenom }}
+                    {% else %}
+                        <span class="badge warning">Aucun chauffeur</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge info">{{ voiture.trajet_set.count }}</span>
+                </td>
+                <td class="action-buttons">
+                    <button class="btn btn-view" onclick="viewVoiture({{ voiture.id }})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-edit" onclick="editVoiture({{ voiture.id }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteVoiture({{ voiture.id }})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center;">Aucune voiture trouvée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function viewVoiture(voitureId) {
+    window.location.href = `/admin/voiture/${voitureId}/`;
+}
+
+function editVoiture(voitureId) {
+    window.location.href = `/admin/voiture/${voitureId}/edit/`;
+}
+
+function deleteVoiture(voitureId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action supprimera également tous les trajets associés !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/voiture/${voitureId}/delete/`;
+        }
+    });
+}
+</script>

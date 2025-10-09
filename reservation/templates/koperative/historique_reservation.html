@@ -1,0 +1,86 @@
+{% extends "koperative/index.html" %}
+
+{% block content %}
+
+<h2>Recherche des réservations par véhicule et trajet</h2>
+
+<form method="get">
+    <input type="text" name="matricule" placeholder="Matricule véhicule" value="{{ matricule }}">
+    <input type="date" name="date_depart" value="{{ date_depart }}">
+    <input type="time" name="heure_depart" value="{{ heure_depart }}">
+    <button type="submit">Rechercher</button>
+</form>
+
+{% if trajet %}
+    <h3>Trajet sélectionné</h3>
+    <p>
+        Véhicule : <strong>{{ trajet.voiture.matricule }}</strong><br>
+        Nombre de place : <strong>{{ trajet.voiture.place }}</strong><br>
+        Départ : <strong>{{ trajet.lieu_depart }}</strong> → Destination : <strong>{{ trajet.lieu_destination }}</strong><br>
+        Date : {{ trajet.date_depart|date:"d/m/Y" }} à {{ trajet.heure_depart|time:"H:i" }}
+        <td>
+            <a href="{% url 'creer_manifold' trajet.id %}">
+                <button type="button">Créer Manifold</button>
+            </a>
+        </td>
+        <td>
+            <a href="{% url 'manifold_detail' trajet.id %}">
+                <button type="button">Voir le manifold</button>
+            </a>
+        </td>
+        
+    </p>
+
+    {% if reservations %}
+        <h3>Réservations</h3>
+        <table border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Nombre de places réservées</th>
+                    <th>Montant payé</th>
+                    <th>Date de réservation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                    <tr>
+                        <td>
+                            {% if reservation.utilisateur %}
+                                {{ reservation.utilisateur.utilisateur.nom }}
+                            {% else %}
+                                {{ reservation.nom_client }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if reservation.utilisateur %}
+                                {{ reservation.utilisateur.utilisateur.prenom }}
+                            {% else %}
+                                {{ reservation.prenom_client }}
+                            {% endif %}
+                        </td>
+                        <td>{{ reservation.nb_place_reserve }}</td>
+                        <td>{{ reservation.montant_total }} Ar</td>
+                        <td>{{ reservation.date_reservation|date:"d/m/Y H:i" }}</td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2">Total</th>
+                    <th>{{ total_places }}</th>
+                    <th>{{ total_frais }} Ar</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    {% else %}
+        <p>Aucune réservation trouvée pour ce trajet.</p>
+    {% endif %}
+{% elif matricule %}
+    <p>Aucun trajet trouvé avec ces informations.</p>
+{% endif %}
+
+{% endblock content %}

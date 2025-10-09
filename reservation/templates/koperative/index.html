@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserveo - Accueil</title>
+  <link rel="stylesheet" href="{% static "reservation/css/indexcoop.css" %}">
+
+</head>
+<body>
+
+    <header> 
+      {% include "../koperative/header.html" %}
+    </header>
+
+  {% block content %}
+  
+  {% include "../koperative/liste_voiture.html" %}
+
+  {% endblock content %} 
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // On cible tous les liens qui ont la classe .btn-delete
+        document.querySelectorAll(".btn-delete").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault(); // empêche le lien direct
+                let url = this.getAttribute("href");
+    
+                Swal.fire({
+                    title: 'Vous voulez vraiment supprimer?',
+                    text: "Cette action est irréversible !",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Supprimer',
+                    cancelButtonText: 'Annuler'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+    </script>
+
+    {% if messages %}
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'success',
+                title: '{{ message }}',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        {% endfor %}
+    });
+    </script>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,113 @@
+<div class="list-container">
+    <div class="list-header">
+        <h2 class="list-title">
+            <i class="fas fa-id-card"></i> Liste des Chauffeurs ({{ chauffeurs|length }})
+        </h2>
+        <div class="list-actions">
+            <input type="text" class="search-input search-chauffeurs" placeholder="Rechercher un chauffeur...">
+            <button class="close-list" onclick="window.location.href='{% url 'administrateur' %}'">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Chauffeur</th>
+                <th>Contact</th>
+                <th>Informations</th>
+                <th>Coopérative</th>
+                <th>Voiture</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chauffeur in chauffeurs %}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        {% if chauffeur.photo %}
+                        <img src="{{ chauffeur.photo.url }}" alt="{{ chauffeur.nom }}" 
+                             style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+                        {% else %}
+                        <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--warning-color); display: flex; align-items: center; justify-content: center; color: white;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <strong>{{ chauffeur.prenom }} {{ chauffeur.nom }}</strong>
+                            <div style="font-size: 0.8rem; color: #6c757d;">CIN: {{ chauffeur.cin }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div><strong>{{ chauffeur.telephone }}</strong></div>
+                    <div style="font-size: 0.8rem; color: #6c757d;">{{ chauffeur.email }}</div>
+                </td>
+                <td>
+                    <div style="font-size: 0.8rem;">
+                        Né le {{ chauffeur.date_naissance|date:"d/m/Y" }}
+                        <div style="color: #6c757d;">à {{ chauffeur.lieu_naissance }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        {% if chauffeur.cooperative.photo %}
+                        <img src="{{ chauffeur.cooperative.photo.url }}" alt="{{ chauffeur.cooperative.nom }}" 
+                             style="width: 30px; height: 30px; border-radius: 6px; object-fit: cover;">
+                        {% endif %}
+                        <span>{{ chauffeur.cooperative.nom }}</span>
+                    </div>
+                </td>
+                <td>
+                    {% if chauffeur.voiture %}
+                    <div>
+                        <strong>{{ chauffeur.voiture.marque }}</strong>
+                        <div style="font-size: 0.8rem; color: #6c757d;">
+                            {{ chauffeur.voiture.matricule }}
+                        </div>
+                    </div>
+                    {% else %}
+                    <span class="badge warning">Aucune voiture</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-id-card" style="font-size: 3rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                    <h3 style="color: #6c757d; margin-bottom: 10px;">Aucun chauffeur trouvé</h3>
+                    <p style="color: #6c757d;">Les coopératives peuvent ajouter des chauffeurs depuis leur interface.</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function viewChauffeur(chauffeurId) {
+    window.location.href = `/chauffeur/${chauffeurId}/detail/`;
+}
+
+function editChauffeur(chauffeurId) {
+    window.location.href = `/chauffeur/${chauffeurId}/edit/`;
+}
+
+function deleteChauffeur(chauffeurId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action est irréversible !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/chauffeur/${chauffeurId}/delete/`;
+        }
+    });
+}
+</script>

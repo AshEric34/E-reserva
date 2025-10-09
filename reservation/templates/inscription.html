@@ -1,0 +1,405 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - E-Reserva</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'reservation/css/inscription.css' %}">
+    <style>
+        /* Styles pour les messages d'alerte */
+.messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 400px;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease-out;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left-color: #28a745;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left-color: #dc3545;
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Animation de disparition */
+.alert.fade-out {
+    animation: slideOutRight 0.3s ease-in forwards;
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+    </style>
+</head>
+<body>
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <div class="alert-content">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                <span>{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="container">
+        <div class="welcome-section">
+            <div class="logo">
+                <h2>E-Reserva</h2>
+            </div>
+            <div class="welcome-content">
+                <p>Rejoignez notre communauté et réservez votre taxi-brousse en toute simplicité.</p>
+                <p>Si vous avez déjà un compte, <a href="{% url 'connexion' %}">connectez-vous ici</a>.</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Réservation rapide et sécurisée</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Suivi en temps réel de vos trajets</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Service client disponible 24/7</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-header">
+                <h2>Créer un compte</h2>
+                <p>Remplissez le formulaire pour vous inscrire</p>
+            </div>
+            
+            <form method="post" id="inscription-form">
+                {% csrf_token %}
+                <div class="form-columns">
+                    <div class="form-column">
+                        <!-- Nom -->
+                        <div class="form-group" style="--i: 1">
+                            <label for="{{ utilisateur_form.nom.id_for_label }}">Nom</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user"></i>
+                                {{ utilisateur_form.nom }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.nom.errors }}</div>
+                        </div>
+            
+                        <!-- Prénom -->
+                        <div class="form-group" style="--i: 2">
+                            <label for="{{ utilisateur_form.prenom.id_for_label }}">Prénom</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user"></i>
+                                {{ utilisateur_form.prenom }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.prenom.errors }}</div>
+                        </div>
+            
+                        <!-- Email -->
+                        <div class="form-group" style="--i: 3">
+                            <label for="{{ utilisateur_form.email.id_for_label }}">E-mail</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                {{ utilisateur_form.email }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.email.errors }}</div>
+                        </div>
+            
+                        <!-- Téléphone -->
+                        <div class="form-group" style="--i: 4">
+                            <label for="{{ utilisateur_form.telephone.id_for_label }}">Téléphone</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-phone"></i>
+                                {{ utilisateur_form.telephone }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.telephone.errors }}</div>
+                        </div>
+            
+                        <!-- CIN -->
+                        <div class="form-group" style="--i: 5">
+                            <label for="{{ utilisateur_form.cin.id_for_label }}">CIN</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-id-card"></i>
+                                {{ utilisateur_form.cin }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.cin.errors }}</div>
+                        </div>
+            
+                        <!-- Adresse -->
+                        <div class="form-group" style="--i: 6">
+                            <label for="{{ utilisateur_form.adresse.id_for_label }}">Adresse</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-home"></i>
+                                {{ utilisateur_form.adresse }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.adresse.errors }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-column">
+            
+                        <!-- Date naissance -->
+                        <div class="form-group" style="--i: 1">
+                            <label for="{{ utilisateur_form.date_naissance.id_for_label }}">Date de naissance</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-calendar"></i>
+                                {{ utilisateur_form.date_naissance }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.date_naissance.errors }}</div>
+                        </div>
+            
+                        <!-- Lieu naissance -->
+                        <div class="form-group" style="--i: 2">
+                            <label for="{{ utilisateur_form.lieux_naissance.id_for_label }}">Lieu de naissance</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ utilisateur_form.lieux_naissance }}
+                            </div>
+                            <div class="error">{{ utilisateur_form.lieux_naissance.errors }}</div>
+                        </div>
+            
+                        <!-- Username -->
+                        <div class="form-group" style="--i: 3">
+                            <label for="{{ user_form.username.id_for_label }}">Nom d'utilisateur</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-at"></i>
+                                {{ user_form.username }}
+                            </div>
+                            <div class="error">{{ user_form.username.errors }}</div>
+                        </div>
+            
+                        <!-- Password1 -->
+                        <div class="form-group" style="--i: 4">
+                            <label for="{{ user_form.password1.id_for_label }}">Mot de passe</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                {{ user_form.password1 }}
+                            </div>
+                            <div class="password-strength">
+                                <div class="strength-meter" id="password-strength-meter"></div>
+                            </div>
+                            <div class="password-info">Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre</div>
+                            <div class="error">{{ user_form.password1.errors }}</div>
+                        </div>
+            
+                        <!-- Password2 -->
+                        <div class="form-group" style="--i: 5">
+                            <label for="{{ user_form.password2.id_for_label }}">Confirmation du mot de passe</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                {{ user_form.password2 }}
+                            </div>
+                            <div class="error">{{ user_form.password2.errors }}</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit"><i class="fas fa-user-plus"></i> S'inscrire</button>
+            </form>            
+        </div>
+    </div>
+
+    <!-- Boîte de dialogue de succès -->
+    <div class="success-dialog" id="successDialog">
+        <div class="dialog-content">
+            <div class="dialog-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Inscription réussie !</h3>
+            <p>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter et profiter de nos services.</p>
+            <button class="dialog-button" onclick="window.location.href='{% url 'connexion' %}'">
+                <i class="fas fa-sign-in-alt"></i> Se connecter
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Animation des éléments du formulaire
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus sur le premier champ
+            document.getElementById('id_nom').focus();
+            
+            // Animation des groupes de formulaire
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                group.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Vérifier si l'inscription a réussi
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                    document.getElementById('successDialog').classList.add('active');
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        });
+
+        // Validation côté client pour améliorer l'expérience utilisateur
+        document.getElementById('inscription-form').addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Validation du téléphone
+            const telephone = document.getElementById('id_telephone').value;
+            const telephoneRegex = /^\d{10}$/;
+            const validPrefixes = ['034', '033', '032', '038', '037'];
+            
+            if (!telephoneRegex.test(telephone)) {
+                document.getElementById('telephone-error').innerHTML = '<i class="fas fa-exclamation-circle"></i> Le numéro doit contenir exactement 10 chiffres.';
+                isValid = false;
+            } else if (!validPrefixes.some(prefix => telephone.startsWith(prefix))) {
+                document.getElementById('telephone-error').innerHTML = '<i class="fas fa-exclamation-circle"></i> Le numéro doit commencer par 034, 033, 032, 038 ou 037.';
+                isValid = false;
+            } else {
+                document.getElementById('telephone-error').textContent = '';
+            }
+            
+            // Validation du CIN
+            const cin = document.getElementById('id_cin').value;
+            const cinRegex = /^\d{12}$/;
+            
+            if (!cinRegex.test(cin)) {
+                document.getElementById('cin-error').innerHTML = '<i class="fas fa-exclamation-circle"></i> Le CIN doit contenir exactement 12 chiffres.';
+                isValid = false;
+            } else {
+                document.getElementById('cin-error').textContent = '';
+            }
+            
+            // Validation de l'email
+            const email = document.getElementById('id_email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+                document.getElementById('email-error').innerHTML = '<i class="fas fa-exclamation-circle"></i> Veuillez entrer une adresse email valide.';
+                isValid = false;
+            } else {
+                document.getElementById('email-error').textContent = '';
+            }
+            
+            // Validation des mots de passe
+            const password1 = document.getElementById('id_password1').value;
+            const password2 = document.getElementById('id_password2').value;
+            
+            if (password1 !== password2) {
+                document.getElementById('password2-error').innerHTML = '<i class="fas fa-exclamation-circle"></i> Les mots de passe ne correspondent pas.';
+                isValid = false;
+            } else {
+                document.getElementById('password2-error').textContent = '';
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+                // Animation d'erreur
+                document.querySelectorAll('.error').forEach(el => {
+                    if (el.textContent) {
+                        el.parentElement.classList.add('error-animation');
+                        setTimeout(() => {
+                            el.parentElement.classList.remove('error-animation');
+                        }, 1000);
+                    }
+                });
+            }
+        });
+
+        // Indicateur de force du mot de passe
+        document.getElementById('id_password1').addEventListener('input', function() {
+            const password = this.value;
+            const strengthMeter = document.getElementById('password-strength-meter');
+            
+            // Réinitialiser les classes
+            strengthMeter.className = 'strength-meter';
+            
+            if (password.length === 0) {
+                strengthMeter.style.width = '0';
+                return;
+            }
+            
+            // Calcul de la force du mot de passe
+            let strength = 0;
+            
+            // Longueur
+            if (password.length > 7) strength += 1;
+            
+            // Contient des lettres minuscules et majuscules
+            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1;
+            
+            // Contient des chiffres
+            if (password.match(/([0-9])/)) strength += 1;
+            
+            // Contient des caractères spéciaux
+            if (password.match(/([!,@,#,$,%,^,&,*,?,_,~])/)) strength += 1;
+            
+            // Mise à jour de la barre de force
+            if (strength <= 2) {
+                strengthMeter.classList.add('weak');
+            } else if (strength === 3) {
+                strengthMeter.classList.add('medium');
+            } else {
+                strengthMeter.classList.add('strong');
+            }
+        });
+    </script>
+</body>
+</html>

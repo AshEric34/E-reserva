@@ -1,0 +1,14 @@
+
+{% block content %}
+<h2>Confirmation de paiement</h2>
+
+<p><strong>Trajet :</strong> {{ trajet }}</p>
+<p><strong>Places choisies :</strong> {{ places|join:', ' }}</p>
+<p><strong>Montant total :</strong> {{ montant }} Ar</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmer et Réserver</button>
+    <a href="{% url 'reserver' trajet.id %}">Modifier</a>
+</form>
+    {% endblock %}

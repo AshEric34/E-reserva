@@ -1,0 +1,110 @@
+<div class="list-container">
+    <div class="list-header">
+        <h2 class="list-title">
+            <i class="fas fa-users"></i> Liste des Utilisateurs ({{ utilisateurs|length }})
+        </h2>
+        <div class="list-actions">
+            <input type="text" class="search-input search-users" placeholder="Rechercher un utilisateur...">
+            <button class="close-list" onclick="window.location.href='{% url 'administrateur' %}'">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th>Informations</th>
+                <th>Contact</th>
+                <th>Inscription</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in utilisateurs %}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <div>
+                            <strong>{{ user.username }}</strong>
+                            <div style="font-size: 0.8rem; color: #6c757d;">ID: {{ user.id }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    {% if user.utilisateur %}
+                        <strong>{{ user.utilisateur.prenom }} {{ user.utilisateur.nom }}</strong>
+                        <div style="font-size: 0.8rem; color: #6c757d;">
+                            CIN: {{ user.utilisateur.cin }}
+                        </div>
+                    {% else %}
+                        <span class="badge warning">Profil incomplet</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div>{{ user.email }}</div>
+                    {% if user.utilisateur %}
+                        <div style="font-size: 0.8rem; color: #6c757d;">
+                            {{ user.utilisateur.telephone }}
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ user.date_joined|date:"d/m/Y" }}
+                    <div style="font-size: 0.8rem; color: #6c757d;">
+                        {{ user.date_joined|timesince }}
+                    </div>
+                </td>
+                <td>
+                    {% if user.is_active %}
+                        <span class="badge success">Actif</span>
+                    {% else %}
+                        <span class="badge danger">Inactif</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-users" style="font-size: 3rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                    <h3 style="color: #6c757d; margin-bottom: 10px;">Aucun utilisateur trouvé</h3>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function viewUser(userId) {
+    // Implémentez la vue utilisateur
+    console.log('Voir utilisateur:', userId);
+}
+
+function editUser(userId) {
+    // Implémentez l'édition utilisateur
+    console.log('Éditer utilisateur:', userId);
+}
+
+function deleteUser(userId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action est irréversible !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Implémentez la suppression
+            console.log('Supprimer utilisateur:', userId);
+        }
+    });
+}
+</script>

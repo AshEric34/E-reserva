@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserveo - Réservation</title>
+  <link rel="stylesheet" href="{% static "reservation/css/schema_reservation.css" %}">
+  <style>
+    .place-btn.selected { background-color: green !important; color: black; }
+    .place-btn.reserved { background-color: gray !important; color: #fff; cursor: not-allowed; }
+    .selected-info { margin-top: 8px; font-weight: bold; }
+  </style>
+</head>
+<body>
+    <header>
+        {% if user.is_authenticated and user.is_utilisateur %}
+            {% include "../users/header.html" %}
+        {% elif user.is_authenticated and user.is_cooperative %}
+            {% include "../koperative/header.html" %}            
+        {% endif %}
+    </header>
+    
+    <div class="schema">
+        <div class="trajet">
+            <h2>Détails de votre réservation</h2>
+            <p><span>Date & heure départ:</span> <span>{{ trajet.date_depart }} à {{ trajet.heure_depart }}</span></p>
+            <p><span>Lieu de départ:</span> <span>{{ trajet.lieu_depart }}</span></p>
+            <p><span>Destination:</span> <span>{{ trajet.lieu_destination }}</span></p>
+            <p><span>Frais par place:</span> <span>{{ trajet.frais }} Ar</span></p>
+            <p><span>Numéro voiture:</span> <span>{{ trajet.voiture.matricule }}</span></p>
+        </div>
+    
+        <div class="place">
+            <p>Veuillez choisir votre place</p>
+    
+            <form id="reservation-form" method="post">
+                {% csrf_token %}
+                <div class="bus-layout">
+                    <div class="devant">
+                        <p>Chauffeur</p>
+                        {% for p in places_avant %}
+                            <button
+                                type="button"
+                                class="place-btn {% if p in places_reservees %}reserved{% endif %}"
+                                data-place="{{ p }}"
+                                {% if p in places_reservees %}disabled aria-disabled="true"{% endif %}>
+                                {{ p }}
+                            </button>
+                        {% endfor %}
+                    </div>
+    
+                    {% for ligne in lignes %}
+                        <div class="ligne">
+                            {% for p in ligne %}
+                                <button
+                                    type="button"
+                                    class="place-btn {% if p in places_reservees %}reserved{% endif %}"
+                                    data-place="{{ p }}"
+                                    {% if p in places_reservees %}disabled aria-disabled="true"{% endif %}>
+                                    {{ p }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+    
+                <!-- Informations de sélection -->
+                <div class="selection-info">
+                    <p>Places sélectionnées : <span id="selected-list">—</span></p>
+                    <p>Total à payer : <span id="total-price">0</span> Ar</p>
+                </div>
+    
+                <!-- prix total caché (mis à jour par JS) -->
+                <input type="hidden" name="prix_total" id="prix-total-hidden" value="0">
+    
+                {% if user.is_authenticated and user.is_cooperative %}
+                    <div class="client-form">
+                        <h3>Informations du client</h3>
+                        <label>Nom :</label>
+                        <input type="text" name="nom" required>
+                        <label>Prénom :</label>
+                        <input type="text" name="prenom" required>
+                        <label>Téléphone :</label>
+                        <input type="text" name="telephone" required>
+                    </div>
+                {% endif %}
+    
+                <button class="btn-reserver" type="submit">
+                    {% if user.is_authenticated and user.is_utilisateur %}
+                        Réserver et Payer
+                    {% elif user.is_authenticated and user.is_cooperative %}
+                        Réserver pour le client
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Overlay d'alerte personnalisé -->
+    <div class="alert-overlay" id="custom-alert">
+        <div class="alert-box">
+            <h3>Attention</h3>
+            <p id="alert-message">Vous devez choisir au moins une place !</p>
+            <button onclick="document.getElementById('custom-alert').style.display = 'none'">OK</button>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selected = [];
+        const buttons = document.querySelectorAll('.place-btn');
+        const totalPriceSpan = document.getElementById('total-price');
+        const prixTotalHidden = document.getElementById('prix-total-hidden');
+        const selectedList = document.getElementById('selected-list');
+        const prixParPlace = Number('{{ trajet.frais|floatformat:0 }}');
+        const form = document.getElementById('reservation-form');
+        const customAlert = document.getElementById('custom-alert');
+        const alertMessage = document.getElementById('alert-message');
+    
+        function showAlert(message) {
+            alertMessage.textContent = message;
+            customAlert.style.display = 'flex';
+        }
+    
+        function updateUI() {
+            // supprimer les anciens champs places[] dynamiques
+            document.querySelectorAll('input[name="places[]"]').forEach(el => el.remove());
+    
+            // créer un champ hidden par place sélectionnée (pour que request.POST.getlist('places[]') fonctionne)
+            selected.forEach(p => {
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'places[]';
+                inp.value = p;
+                form.appendChild(inp);
+            });
+    
+            const total = selected.length * prixParPlace;
+            totalPriceSpan.textContent = total.toLocaleString();
+            prixTotalHidden.value = total;
+            selectedList.textContent = selected.length ? selected.join(', ') : '—';
+        }
+    
+        buttons.forEach(btn => {
+            // si la place est marquée reserved au rendu, pas d'event listener
+            if (btn.classList.contains('reserved') || btn.disabled) {
+                btn.classList.add('reserved');
+                btn.setAttribute('aria-disabled', 'true');
+                // s'assurer qu'elle a le style grisé
+                btn.style.backgroundColor = '#ff6b6b';
+                return;
+            }
+    
+            btn.addEventListener('click', () => {
+                const place = btn.dataset.place;
+                const idx = selected.indexOf(place);
+                if (idx > -1) {
+                    // dé-sélection
+                    selected.splice(idx, 1);
+                    btn.classList.remove('selected');
+                    btn.style.backgroundColor = '#4CAF50';
+                    btn.style.color = 'white';
+                } else {
+                    // sélection
+                    selected.push(place);
+                    btn.classList.add('selected');
+                    btn.style.backgroundColor = '#ffdd40';
+                    btn.style.color = '#1a2a6c';
+                }
+                updateUI();
+            });
+        });
+    
+        // Vérifier avant soumission : au moins une place sélectionnée
+        form.addEventListener('submit', function (e) {
+            if (selected.length === 0) {
+                e.preventDefault();
+                showAlert("⚠️ Vous devez choisir au moins une place !");
+                return false;
+            }
+        });
+    
+        // update initial (au cas où)
+        updateUI();
+    });
+    </script>
+    </body>
+    </html>

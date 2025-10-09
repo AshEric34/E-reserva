@@ -1,0 +1,279 @@
+{% extends "koperative/index.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .chauffeur-container {
+        margin-top: 100px;
+        padding: 20px;
+    }
+    
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .titre {
+        color: #195c68;
+        margin: 0;
+    }
+    
+    .btn-ajouter {
+        text-decoration: none;
+        padding: 12px 20px;
+        background-color: #195c68;
+        color: white;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .btn-ajouter:hover {
+        background-color: #12434b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-ajouter::before {
+        content: "+";
+        margin-right: 8px;
+        font-size: 18px;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+    }
+    
+    thead {
+        background-color: #195c68;
+        color: white;
+    }
+    
+    th {
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+    }
+    
+    tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.2s;
+    }
+    
+    tbody tr:hover {
+        background-color: #f5f9fa;
+    }
+    
+    td {
+        padding: 14px 12px;
+        vertical-align: middle;
+    }
+    
+    .photo-cell {
+        width: 70px;
+    }
+    
+    .photo-cell img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e0e0e0;
+    }
+    
+    .action-cell {
+        white-space: nowrap;
+    }
+    
+    .btn-action {
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 8px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-modifier {
+        background-color: #4caf50;
+        color: white;
+    }
+    
+    .btn-modifier:hover {
+        background-color: #3d8b40;
+        transform: translateY(-1px);
+    }
+    
+    .btn-supprimer {
+        background-color: #f44336;
+        color: white;
+    }
+    
+    .btn-supprimer:hover {
+        background-color: #d32f2f;
+        transform: translateY(-1px);
+    }
+    
+    /* Styles pour les écrans moyens */
+    @media (max-width: 992px) {
+        .chauffeur-container {
+            margin-top: 80px;
+            padding: 15px;
+        }
+        
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .btn-ajouter {
+            margin-top: 15px;
+        }
+    }
+    
+    /* Styles pour les petits écrans */
+    @media (max-width: 768px) {
+        .chauffeur-container {
+            margin-top: 70px;
+            padding: 10px;
+        }
+        
+        th, td {
+            padding: 10px 8px;
+            font-size: 14px;
+        }
+        
+        .btn-action {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+        
+        .photo-cell img {
+            width: 40px;
+            height: 40px;
+        }
+    }
+    
+    /* Styles pour les très petits écrans */
+    @media (max-width: 480px) {
+        .titre {
+            font-size: 20px;
+        }
+        
+        .btn-ajouter {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        th, td {
+            padding: 8px 6px;
+            font-size: 13px;
+        }
+        
+        .btn-action {
+            padding: 5px 8px;
+            margin-bottom: 5px;
+        }
+        
+        .action-cell {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    
+    /* Message d'état vide */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #757575;
+    }
+    
+    .empty-state i {
+        font-size: 50px;
+        margin-bottom: 15px;
+        display: block;
+        color: #ccc;
+    }
+</style>
+
+<div class="chauffeur-container">
+    <div class="header-section">
+        <h2 class="titre">LISTE DES CHAUFFEURS</h2>
+        <a class="btn-ajouter" href="{% url 'ajouter_chauffeur' %}">Ajouter un chauffeur</a>
+    </div>
+
+    <div class="table-container">
+        {% if chauffeurs %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    <th>CIN</th>
+                    <th>Date naissance</th>
+                    <th>Lieu naissance</th>
+                    <th>Voiture</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chauffeur in chauffeurs %}
+                <tr>
+                    <td class="photo-cell">
+                        {% if chauffeur.photo %}
+                            <img src="{{ chauffeur.photo.url }}" alt="Photo de {{ chauffeur.prenom }} {{ chauffeur.nom }}">
+                        {% else %}
+                            <img src="{% static 'images/default.png' %}" alt="Photo par défaut">
+                        {% endif %}
+                    </td>
+                    <td>{{ chauffeur.nom }}</td>
+                    <td>{{ chauffeur.prenom }}</td>
+                    <td>{{ chauffeur.telephone }}</td>
+                    <td>{{ chauffeur.email }}</td>
+                    <td>{{ chauffeur.cin }}</td>
+                    <td>{{ chauffeur.date_naissance }}</td>
+                    <td>{{ chauffeur.lieu_naissance }}</td>
+                    <td>{{ chauffeur.voiture }}</td>
+                    <td class="action-cell">
+                        <a class="btn-action btn-modifier" href="{% url 'modifier_chauffeur' chauffeur.id %}">Modifier</a>
+                        <a class="btn-action btn-supprimer btn-delete" href="{% url 'supprimer_chauffeur' chauffeur.id %}" onclick="return confirmDelete(event, this.href);">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <h3>Aucun chauffeur enregistré</h3>
+            <p>Commencez par ajouter votre premier chauffeur</p>
+            <a class="btn-ajouter" href="{% url 'ajouter_chauffeur' %}" style="margin-top: 15px;">Ajouter un chauffeur</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- Font Awesome pour les icônes -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Choisir votre place</h2>
+<p>Voiture : {{ voiture.numero_voiture }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="grille-places">
+        {% for i in total_places %}
+            {% if i in places_occupees %}
+                <div class="place occupee">{{ i }}</div>
+            {% else %}
+                <label class="place libre">
+                    <input type="radio" name="numero_place" value="{{ i }}" required>
+                    {{ i }}
+                </label>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <button type="submit">Réserver cette place</button>
+</form>
+{% endblock %}

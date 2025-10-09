@@ -1,0 +1,317 @@
+{% extends "koperative/index.html" %}
+{% load static %}
+{% block content %}
+<style>
+    /* Styles communs aux deux tableaux */
+    .content-container {
+        margin-top: 20px;
+        padding: 20px;
+    }
+    
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .titre {
+        color: #195c68;
+        margin: 0;
+    }
+    
+    .btn-ajouter {
+        text-decoration: none;
+        padding: 12px 20px;
+        background-color: #195c68;
+        color: white;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+    
+    .btn-ajouter:hover {
+        background-color: #12434b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-ajouter::before {
+        content: "+";
+        margin-right: 8px;
+        font-size: 18px;
+    }
+    
+    .btn-gestion {
+        text-decoration: none;
+        padding: 12px 20px;
+        background-color: #ff9800;
+        color: white;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .btn-gestion:hover {
+        background-color: #e68900;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-bottom: 40px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+    }
+    
+    thead {
+        background-color: #195c68;
+        color: white;
+    }
+    
+    th {
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.2s;
+    }
+    
+    tbody tr:hover {
+        background-color: #f5f9fa;
+    }
+    
+    td {
+        padding: 14px 12px;
+        vertical-align: middle;
+    }
+    
+    .photo-cell {
+        width: 70px;
+    }
+    
+    .photo-cell img {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        object-fit: cover;
+        border: 2px solid #e0e0e0;
+    }
+    
+    .action-cell {
+        white-space: nowrap;
+    }
+    
+    .btn-action {
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 8px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-modifier {
+        background-color: #4caf50;
+        color: white;
+    }
+    
+    .btn-modifier:hover {
+        background-color: #3d8b40;
+        transform: translateY(-1px);
+    }
+    
+    .btn-supprimer {
+        background-color: #f44336;
+        color: white;
+    }
+    
+    .btn-supprimer:hover {
+        background-color: #d32f2f;
+        transform: translateY(-1px);
+    }
+    
+    /* Styles pour les écrans moyens */
+    @media (max-width: 992px) {
+        .content-container {
+            margin-top: 15px;
+            padding: 15px;
+        }
+        
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .btn-container {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    }
+    
+    /* Styles pour les petits écrans */
+    @media (max-width: 768px) {
+        .content-container {
+            margin-top: 10px;
+            padding: 10px;
+        }
+        
+        th, td {
+            padding: 10px 8px;
+            font-size: 14px;
+        }
+        
+        .btn-action {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+        
+        .photo-cell img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .btn-ajouter, .btn-gestion {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+    }
+    
+    /* Styles pour les très petits écrans */
+    @media (max-width: 480px) {
+        .titre {
+            font-size: 20px;
+        }
+        
+        .btn-container {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .btn-ajouter, .btn-gestion {
+            width: 100%;
+            justify-content: center;
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+        
+        th, td {
+            padding: 8px 6px;
+            font-size: 13px;
+        }
+        
+        .btn-action {
+            padding: 5px 8px;
+            margin-bottom: 5px;
+        }
+        
+        .action-cell {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    
+    /* Message d'état vide */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #757575;
+    }
+    
+    .empty-state i {
+        font-size: 50px;
+        margin-bottom: 15px;
+        display: block;
+        color: #ccc;
+    }
+</style>
+
+<!-- Premier tableau : Voitures -->
+<div class="content-container">
+    <div class="header-section">
+        <h2 class="titre">LISTE DES VOITURES</h2>
+        <div class="btn-container">
+            <a class="btn-gestion" href="{% url 'ajouter_categorie' %}">Gestion catégorie</a>
+            <a class="btn-ajouter" href="{% url 'ajouter_voiture' %}">Ajouter une voiture</a>
+        </div>
+    </div>
+
+    <div class="table-container">
+        {% if voitures %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Marque</th>
+                    <th>Places</th>
+                    <th>Numéro</th>
+                    <th>Type</th>
+                    <th>Kopérative</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for voiture in voitures %}
+                <tr>
+                    <td class="photo-cell">
+                        {% if voiture.photo %}
+                            <img src="{{ voiture.photo.url }}" alt="Photo de {{ voiture.marque }} {{ voiture.matricule }}">
+                        {% else %}
+                            <img src="{% static 'images/default.png' %}" alt="Photo par défaut">
+                        {% endif %}
+                    </td>
+                    <td>{{ voiture.marque }}</td>
+                    <td>{{ voiture.place }}</td>
+                    <td>{{ voiture.matricule }}</td>
+                    <td>{{ voiture.categorie }}</td>
+                    <td>{{ voiture.cooperative }}</td>
+                    <td class="action-cell">
+                        <a class="btn-action btn-modifier" href="{% url 'modifier_voiture' voiture.id %}">Modifier</a>
+                        <a class="btn-action btn-supprimer btn-delete" href="{% url 'supprimer_voiture' voiture.id %}" onclick="return confirmDelete(event, this.href);">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-car"></i>
+            <h3>Aucune voiture enregistrée</h3>
+            <p>Commencez par ajouter votre première voiture</p>
+            <a class="btn-ajouter" href="{% url 'ajouter_voiture' %}" style="margin-top: 15px;">Ajouter une voiture</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function confirmDelete(event, url) {
+    event.preventDefault();
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette voiture ?')) {
+        window.location.href = url;
+    }
+    return false;
+}
+</script>
+
+{% endblock content %}

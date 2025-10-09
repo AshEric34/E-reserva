@@ -1,0 +1,153 @@
+<!-- administrateur/partials/liste_cooperatives.html -->
+<div class="list-container">
+    <div class="list-header">
+        <h2 class="list-title">
+            <i class="fas fa-users"></i> Liste des Coopératives ({{ cooperatives|length }})
+        </h2>
+        <div class="list-actions">
+            <input type="text" class="search-input search-cooperatives" placeholder="Rechercher une coopérative...">
+            <button class="close-list" onclick="window.location.href='{% url 'administrateur' %}'">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Coopérative</th>
+                <th>Contact</th>
+                <th>Adresse</th>
+                <th>Date de création</th>
+                <th>Statistiques</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cooperative in cooperatives %}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        {% if cooperative.photo %}
+                        <img src="{{ cooperative.photo.url }}" alt="{{ cooperative.nom }}" 
+                             style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+                        {% else %}
+                        <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white;">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <strong>{{ cooperative.nom }}</strong>
+                            <div style="font-size: 0.8rem; color: #6c757d;">ID: {{ cooperative.id }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div><strong>{{ cooperative.telephone }}</strong></div>
+                    <div style="font-size: 0.8rem; color: #6c757d;">{{ cooperative.email }}</div>
+                </td>
+                <td>
+                    <div style="max-width: 200px;">{{ cooperative.adresse|truncatewords:5 }}</div>
+                </td>
+                <td>
+                    {{ cooperative.utilisateur.date_joined|date:"d/m/Y" }}
+                    <div style="font-size: 0.8rem; color: #6c757d;">
+                        {{ cooperative.utilisateur.date_joined|timesince }}
+                    </div>
+                </td>
+                <td>
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span class="badge info">{{ cooperative.voiture_set.count }} voitures</span>
+                        <span class="badge secondary">{{ cooperative.chauffeurs.count }} chauffeurs</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit btn-sm" onclick="editCooperative({{ cooperative.id }})" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-delete btn-sm" onclick="deleteCooperative({{ cooperative.id }})" title="Supprimer">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-building" style="font-size: 3rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                    <h3 style="color: #6c757d; margin-bottom: 10px;">Aucune coopérative trouvée</h3>
+                    <a href="{% url 'administrateur' %}?section=ajouter_cooperative" class="action-button" style="display: inline-flex;">
+                        <i class="fas fa-plus-circle"></i> Ajouter une coopérative
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    <script>
+        function editCooperative(coopId) {
+            window.location.href = `/administrateur/cooperative/${coopId}/modifier/`;
+        }
+        
+        function deleteCooperative(coopId) {
+            Swal.fire({
+                title: 'Êtes-vous sûr ?',
+                html: `
+                    <div style="text-align: left;">
+                        <p>Cette action est <strong>irréversible</strong> et supprimera :</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>La coopérative et son compte utilisateur</li>
+                            <li>Toutes les voitures associées</li>
+                            <li>Tous les chauffeurs associés</li>
+                            <li>Tous les trajets associés</li>
+                        </ul>
+                        <p style="margin-top: 15px; color: #e74c3c; font-weight: bold;">
+                            ⚠️ Cette action ne peut pas être annulée !
+                        </p>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Oui, supprimer définitivement',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Créer un formulaire caché pour envoyer la requête POST
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/administrateur/cooperative/${coopId}/supprimer/`;
+                    
+                    // Ajouter le token CSRF
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = 'csrfmiddlewaretoken';
+                    csrfToken.value = getCookie('csrftoken');
+                    form.appendChild(csrfToken);
+                    
+                    // Ajouter le formulaire au document et le soumettre
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+        
+        // Fonction utilitaire pour récupérer le cookie CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        </script>

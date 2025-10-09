@@ -1,0 +1,465 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Reserva - Accueil</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <header class="main-header">
+    <!-- Barre supérieure avec informations utilisateur -->
+    <div class="top-bar">
+      <div class="container">
+        <div class="user-info">
+          {% if user.is_authenticated %}
+          <div class="user-welcome">
+            <i class="fas fa-user-circle"></i>
+            <span>Bonjour, <strong>{{ user.username }}</strong></span>
+          </div>
+          {% else %}
+          <a href="{% url 'connexion' %}" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i>
+            Connexion
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation principale -->
+    <div class="main-nav">
+      <div class="container">
+        <div class="nav-content">
+          <!-- Logo -->
+          <div class="logo">
+            <h1>
+              <i class="fas fa-car-side"></i>
+              E-Reserva
+            </h1>
+            <span class="tagline">Votre taxi-brousse en un clic</span>
+          </div>
+
+          <!-- Menu navigation -->
+          <nav class="navigation">
+            <ul class="nav-menu">
+              <li class="nav-item">
+                <a href="{% url 'utilisateurs' %}" class="nav-link">
+                  <i class="fas fa-home"></i>
+                  Accueil
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'historique' %}" class="nav-link">
+                  <i class="fas fa-history"></i>
+                  Historique
+                </a>
+              </li>
+              {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a href="#" onclick="confirmLogout(event)" class="nav-link logout-btn">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Déconnexion
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+
+          <!-- Menu mobile -->
+          <div class="mobile-menu">
+            <button class="menu-toggle" id="menuToggle">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menu mobile déroulant -->
+  <div class="mobile-nav" id="mobileNav">
+    <nav class="mobile-nav-content">
+      <a href="{% url 'utilisateurs' %}" class="mobile-nav-link">
+        <i class="fas fa-home"></i>
+        Accueil
+      </a>
+      <a href="{% url 'historique' %}" class="mobile-nav-link">
+        <i class="fas fa-history"></i>
+        Historique
+      </a>
+      {% if user.is_authenticated %}
+      <a href="#" onclick="confirmLogout(event)" class="mobile-nav-link logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        Déconnexion
+      </a>
+      {% else %}
+      <a href="{% url 'connexion' %}" class="mobile-nav-link">
+        <i class="fas fa-sign-in-alt"></i>
+        Connexion
+      </a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:none;">
+    {% csrf_token %}
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* Variables CSS */
+    :root {
+      --primary: #2c5aa0;
+      --primary-dark: #1e3d72;
+      --secondary: #ff6b35;
+      --accent: #ffdd40;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --success: #28a745;
+      --danger: #dc3545;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+      --transition: all 0.3s ease;
+    }
+
+    /* Reset et base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header principal */
+    .main-header {
+      background: white;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* Barre supérieure */
+    .top-bar {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 8px 0;
+      font-size: 0.9rem;
+    }
+
+    .user-info {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .user-welcome {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-welcome i {
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .user-welcome strong {
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .login-btn {
+      color: white;
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: var(--radius);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .login-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* Navigation principale */
+    .main-nav {
+      padding: 15px 0;
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Logo */
+    .logo h1 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .logo h1 i {
+      color: var(--secondary);
+      font-size: 2rem;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      font-weight: 500;
+      margin-left: 35px;
+    }
+
+    /* Navigation desktop */
+    .navigation {
+      display: flex;
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 5px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background: var(--light);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .nav-link i {
+      font-size: 1.1rem;
+    }
+
+    .logout-btn {
+      color: var(--danger);
+      background: rgba(220, 53, 69, 0.1);
+    }
+
+    .logout-btn:hover {
+      background: rgba(220, 53, 69, 0.2);
+      color: var(--danger);
+    }
+
+    /* Menu mobile */
+    .mobile-menu {
+      display: none;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: var(--primary);
+      transition: var(--transition);
+    }
+
+    /* Navigation mobile */
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 280px;
+      height: 100vh;
+      background: white;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      transition: var(--transition);
+      padding-top: 80px;
+    }
+
+    .mobile-nav.active {
+      left: 0;
+    }
+
+    .mobile-nav-content {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 20px;
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      margin-bottom: 5px;
+    }
+
+    .mobile-nav-link:hover {
+      background: var(--light);
+      color: var(--primary);
+    }
+
+    .mobile-nav-link i {
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Overlay pour mobile */
+    .mobile-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+    }
+
+    .mobile-overlay.active {
+      display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navigation {
+        display: none;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .logo h1 {
+        font-size: 1.5rem;
+      }
+
+      .tagline {
+        display: none;
+      }
+
+      .nav-content {
+        padding: 0 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo h1 {
+        font-size: 1.3rem;
+      }
+
+      .logo h1 i {
+        font-size: 1.5rem;
+      }
+
+      .user-welcome span {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+
+  <script>
+    function confirmLogout(event) {
+      event.preventDefault();
+
+      Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Vous allez être déconnecté de votre session.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, me déconnecter',
+        cancelButtonText: 'Annuler',
+        backdrop: true,
+        allowOutsideClick: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('logout-form').submit();
+        }
+      });
+    }
+
+    // Gestion du menu mobile
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileNav = document.getElementById('mobileNav');
+      const body = document.body;
+
+      menuToggle.addEventListener('click', function() {
+        mobileNav.classList.toggle('active');
+        
+        // Créer ou supprimer l'overlay
+        let overlay = document.querySelector('.mobile-overlay');
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.className = 'mobile-overlay';
+          document.body.appendChild(overlay);
+        }
+        
+        overlay.classList.toggle('active');
+        
+        // Fermer le menu en cliquant sur l'overlay
+        overlay.addEventListener('click', function() {
+          mobileNav.classList.remove('active');
+          overlay.classList.remove('active');
+        });
+      });
+
+      // Animation du bouton menu
+      menuToggle.addEventListener('click', function() {
+        const spans = menuToggle.querySelectorAll('span');
+        spans[0].style.transform = mobileNav.classList.contains('active') ? 'rotate(45deg) translate(6px, 6px)' : 'none';
+        spans[1].style.opacity = mobileNav.classList.contains('active') ? '0' : '1';
+        spans[2].style.transform = mobileNav.classList.contains('active') ? 'rotate(-45deg) translate(6px, -6px)' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

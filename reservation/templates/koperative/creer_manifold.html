@@ -1,0 +1,340 @@
+{% extends "koperative/index.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .manifold-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .trajet-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .trajet-info h3 {
+        margin: 0 0 15px 0;
+        font-size: 1.5em;
+    }
+
+    .trajet-details {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .detail-item {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e1e5e9;
+    }
+
+    .form-container h2 {
+        color: #333;
+        margin-bottom: 25px;
+        text-align: center;
+        font-size: 1.8em;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background-color: #f8f9fa;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background-color: white;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #545b62;
+        transform: translateY(-2px);
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+        font-weight: normal;
+    }
+
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+    }
+
+    .form-group input.error {
+        border-color: #dc3545;
+    }
+
+    .help-text {
+        color: #6c757d;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* Style spécifique pour le champ date */
+    input[type="date"] {
+        background: white url('data:image/svg+xml;utf8,<svg fill="%23666" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>') no-repeat right 10px center;
+        background-size: 20px;
+    }
+
+    /* Animation pour les erreurs */
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .form-group.has-error input {
+        animation: shake 0.5s ease-in-out;
+        border-color: #dc3545;
+    }
+
+    /* Styles pour les informations des places */
+    .places-info {
+        background: #e8f5e8;
+        border: 1px solid #4caf50;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .places-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    
+    .place-disponible {
+        background: #4caf50;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    
+    .place-occupee {
+        background: #f44336;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .manifold-container {
+            padding: 10px;
+        }
+        
+        .trajet-details {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+        
+        .form-container {
+            padding: 20px 15px;
+        }
+        
+        .places-list {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="manifold-container">
+    <!-- Messages de succès/erreur -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success-message">
+                ✅ {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="trajet-info">
+        <h3>Informations du Trajet</h3>
+        <div class="trajet-details">
+            <div class="detail-item">
+                <strong>Trajet :</strong><br>
+                {{ trajet.lieu_depart }} → {{ trajet.lieu_destination }}
+            </div>
+            <div class="detail-item">
+                <strong>Véhicule :</strong><br>
+                {{ trajet.voiture.matricule }}
+            </div>
+            <div class="detail-item">
+                <strong>Nombre de places total :</strong><br>
+                {{ nombre_places_total }}
+            </div>
+            <div class="detail-item">
+                <strong>Places attribuées :</strong><br>
+                {{ manifold.passagers.count }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Information sur les places -->
+    <div class="places-info">
+        <h4 style="margin: 0 0 10px 0; color: #2e7d32;">📊 État des places</h4>
+        <p style="margin: 0 0 10px 0;"><strong>Places disponibles :</strong> {{ places_disponibles|length }} / {{ nombre_places_total }}</p>
+        
+        <div class="places-list">
+            {% for place in places_disponibles %}
+                <span class="place-disponible">Place {{ place }}</span>
+            {% endfor %}
+            {% for place in places_attribuees %}
+                <span class="place-occupee">Place {{ place }} ✗</span>
+            {% endfor %}
+        </div>
+        
+        <p style="margin-top: 10px; font-size: 14px; color: #666; margin-bottom: 0;">
+            <strong>Note :</strong> Choisissez un numéro de place disponible dans la liste ci-dessus.
+        </p>
+    </div>
+
+    <div class="form-actions">
+        <a href="{% url 'manifold_detail' trajet.id %}" class="btn btn-secondary">
+            📋 Voir le manifold
+        </a>
+    </div>
+
+    <div class="form-container">
+        <h2>Ajouter un Passager</h2>
+        
+        <!-- Affichage des erreurs non-field -->
+        {% if form.non_field_errors %}
+            <div class="error-message" style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                {% for error in form.non_field_errors %}
+                    ❌ {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="manifold-form">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<span style="color: red;">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="error-message">
+                    {% for error in field.errors %}
+                    ❌ {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if field.help_text %}
+                <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+                
+                <!-- Aide spécifique pour le champ numero_places -->
+                {% if field.name == 'numero_places' %}
+                    <small class="help-text">
+                        Choisissez un numéro entre 1 et {{ nombre_places_total }} qui n'est pas déjà attribué.
+                    </small>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    ✅ Ajouter le Passager
+                </button>
+                <a href="{% url 'manifold_detail' trajet.id %}" class="btn btn-secondary">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

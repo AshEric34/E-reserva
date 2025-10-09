@@ -1,0 +1,1138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Admin</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #1abc9c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--secondary-color);
+            color: white;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: var(--primary-color);
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--light-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header h1 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .card-icon.cooperative {
+            background: var(--primary-color);
+        }
+
+        .card-icon.users {
+            background: var(--accent-color);
+        }
+
+        .card-icon.chauffeur {
+            background: var(--warning-color);
+        }
+
+        .card-icon.voiture {
+            background: var(--success-color);
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card-change {
+            font-size: 0.85rem;
+        }
+
+        .card-change.positive {
+            color: var(--success-color);
+        }
+
+        .card-change.negative {
+            color: var(--danger-color);
+        }
+
+        .card-change.neutral {
+            color: #777;
+        }
+
+        /* Action Button */
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .action-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-button i {
+            font-size: 1.1rem;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--dark-color);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: #777;
+        }
+
+        /* Styles pour les cartes cliquables */
+        .card.clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .card.clickable:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card.clickable.active {
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Styles pour les listes */
+        .list-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .list-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .list-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eef2f7;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+
+        .data-table tr {
+            transition: var(--transition);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .badge.warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .badge.info {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge.danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        /* Boutons d'action */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+
+        .btn-edit {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-view {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #16a085;
+            transform: translateY(-2px);
+        }
+
+        /* Recherche */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .close-list {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .close-list:hover {
+            background: var(--dark-color);
+        }
+
+        /* Messages */
+        .messages-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left: 4px solid;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left-color: #17a2b8;
+        }
+
+        .download-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .download-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Styles pour le formulaire d'ajout */
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background: white;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-control.error {
+            border-color: var(--danger-color);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .submit-btn {
+            background: var(--success-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cancel-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .cancel-btn:hover {
+            background: var(--dark-color);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .help-text {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .list-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .form-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .messages-container {
+                position: relative;
+                top: auto;
+                right: auto;
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Messages en position fixed -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                <div style="flex: 1;">
+                    {{ message }}
+                    {% if 'download_ticket' in request.session and message.tags == 'success' %}
+                    <div style="margin-top: 10px;">
+                        <a href="{% url 'download_ticket' %}" class="download-link">
+                            <i class="fas fa-download"></i> Télécharger les identifiants (PDF)
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <button onclick="this.parentElement.parentElement.style.display='none'" 
+                        style="background: none; border: none; color: inherit; cursor: pointer; margin-left: 10px; align-self: flex-start;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Tableau de Bord</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <ul>
+                    <li><a href="{% url 'administrateur' %}" class="{% if not active_list and not active_section %}active{% endif %}"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="{% url 'administrateur' %}?list=cooperatives" class="{% if active_list == 'cooperatives' %}active{% endif %}"><i class="fas fa-users"></i> Coopératives</a></li>
+                    <li><a href="{% url 'administrateur' %}?list=users" class="{% if active_list == 'users' %}active{% endif %}"><i class="fas fa-user"></i> Utilisateurs</a></li>
+                    <li><a href="{% url 'administrateur' %}?list=chauffeurs" class="{% if active_list == 'chauffeurs' %}active{% endif %}"><i class="fas fa-id-card"></i> Chauffeurs</a></li>
+                    <li><a href="{% url 'administrateur' %}?list=voitures" class="{% if active_list == 'voitures' %}active{% endif %}"><i class="fas fa-car"></i> Voitures</a></li>
+                    <li><a href="{% url 'ajouter_cooperative' %}" class="{% if active_section == 'ajouter_cooperative' %}active{% endif %}"><i class="fas fa-plus"></i> Ajouter Coopérative</a></li>
+                    <li><a href="#" onclick="confirmLogout(event)"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>
+                    {% if active_section == 'ajouter_cooperative' %}
+                        Ajouter une Coopérative
+                    {% elif active_section == 'modifier_cooperative' %}
+                        Modifier la Coopérative
+                    {% elif active_list %}
+                        {% if active_list == 'users' %}Gestion des Utilisateurs
+                        {% elif active_list == 'cooperatives' %}Gestion des Coopératives
+                        {% elif active_list == 'chauffeurs' %}Gestion des Chauffeurs
+                        {% elif active_list == 'voitures' %}Gestion des Voitures
+                        {% endif %}
+                    {% else %}
+                        Tableau de Bord Administrateur
+                    {% endif %}
+                </h1>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <span>Administrateur</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            {% if not active_section %}
+            <div class="dashboard-cards">
+                <!-- Carte Coopératives -->
+                <div class="card clickable {% if active_list == 'cooperatives' %}active{% endif %}" 
+                     onclick="window.location.href='{% url 'administrateur' %}{% if active_list != 'cooperatives' %}?list=cooperatives{% endif %}'">
+                    <div class="card-header">
+                        <div class="card-title">Coopératives</div>
+                        <div class="card-icon cooperative">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">{{ coop_stats.total }}</div>
+                    <div class="card-change {% if coop_stats.new_this_week > 0 %}positive{% else %}neutral{% endif %}">
+                        {% if coop_stats.new_this_week > 0 %}
+                            +{{ coop_stats.new_this_week }} cette semaine
+                        {% else %}
+                            Aucun nouveau cette semaine
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Carte Utilisateurs -->
+                <div class="card clickable {% if active_list == 'users' %}active{% endif %}" 
+                     onclick="window.location.href='{% url 'administrateur' %}{% if active_list != 'users' %}?list=users{% endif %}'">
+                    <div class="card-header">
+                        <div class="card-title">Utilisateurs</div>
+                        <div class="card-icon users">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">{{ user_stats.total }}</div>
+                    <div class="card-change {% if user_stats.new_this_week > 0 %}positive{% else %}neutral{% endif %}">
+                        {% if user_stats.new_this_week > 0 %}
+                            +{{ user_stats.new_this_week }} cette semaine
+                        {% else %}
+                            Aucun nouvel utilisateur
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Carte Chauffeurs -->
+                <div class="card clickable {% if active_list == 'chauffeurs' %}active{% endif %}" 
+                     onclick="window.location.href='{% url 'administrateur' %}{% if active_list != 'chauffeurs' %}?list=chauffeurs{% endif %}'">
+                    <div class="card-header">
+                        <div class="card-title">Chauffeurs</div>
+                        <div class="card-icon chauffeur">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">{{ chauffeur_stats.total }}</div>
+                    <div class="card-change {% if chauffeur_stats.new_this_week > 0 %}positive{% else %}neutral{% endif %}">
+                        {% if chauffeur_stats.new_this_week > 0 %}
+                            +{{ chauffeur_stats.new_this_week }} cette semaine
+                        {% else %}
+                            Aucun nouveau chauffeur
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Carte Voitures -->
+                <div class="card clickable {% if active_list == 'voitures' %}active{% endif %}" 
+                     onclick="window.location.href='{% url 'administrateur' %}{% if active_list != 'voitures' %}?list=voitures{% endif %}'">
+                    <div class="card-header">
+                        <div class="card-title">Voitures</div>
+                        <div class="card-icon voiture">
+                            <i class="fas fa-car"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">{{ voiture_stats.total }}</div>
+                    <div class="card-change {% if voiture_stats.new_this_week > 0 %}positive{% else %}neutral{% endif %}">
+                        {% if voiture_stats.new_this_week > 0 %}
+                            +{{ voiture_stats.new_this_week }} cette semaine
+                        {% else %}
+                            Aucune nouvelle voiture
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Button (toujours visible sauf sur formulaire) -->
+            {% if not active_section %}
+            <a href="{% url 'ajouter_cooperative' %}" class="action-button">
+                <i class="fas fa-plus-circle"></i> Ajouter une coopérative
+            </a>
+            {% endif %}
+
+            <!-- Section dynamique : Formulaire OU Liste OU Activité récente -->
+            {% if active_section == 'ajouter_cooperative' or active_section == 'modifier_cooperative' %}
+                <!-- Afficher le formulaire d'ajout ou modification -->
+                {% include 'administrateur/partials/formulaire_cooperative.html' %}
+            {% elif active_list %}
+                <!-- Afficher la liste correspondante -->
+                {% if active_list == 'users' and utilisateurs %}
+                    {% include 'administrateur/partials/liste_utilisateurs.html' %}
+                {% elif active_list == 'cooperatives' and cooperatives %}
+                    {% include 'administrateur/partials/liste_cooperatives.html' %}
+                {% elif active_list == 'chauffeurs' and chauffeurs %}
+                    {% include 'administrateur/partials/liste_chauffeurs.html' %}
+                {% elif active_list == 'voitures' and voitures %}
+                    {% include 'administrateur/partials/liste_voitures.html' %}
+                {% endif %}
+            {% else %}
+                <!-- Afficher l'activité récente -->
+                <div class="recent-activity">
+                    <h2 class="section-title">Activité récente</h2>
+                    <ul class="activity-list">
+                        {% for reservation in recent_activity %}
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <div class="activity-content">
+                                {% if reservation.utilisateur %}
+                                    Nouvelle réservation par {{ reservation.utilisateur.username }}
+                                {% else %}
+                                    Réservation sur place ({{ reservation.nom_client }} {{ reservation.prenom_client }})
+                                {% endif %}
+                                - {{ reservation.nb_place_reserve }} place(s)
+                                <div class="activity-time">{{ reservation.date_reservation|timesince }}</div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="activity-item">
+                            <div class="activity-content">
+                                Aucune activité récente
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:none;">
+        {% csrf_token %}
+    </form>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Êtes-vous sûr ?',
+                text: "Vous allez être déconnecté.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, déconnexion',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+
+        // Recherche en temps réel
+        function setupSearch(inputSelector) {
+            const searchInput = document.querySelector(inputSelector);
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll('.data-table tbody tr');
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
+        }
+
+        // Initialiser la recherche selon la liste active
+        {% if active_list == 'users' %}
+        setupSearch('.search-users');
+        {% elif active_list == 'cooperatives' %}
+        setupSearch('.search-cooperatives');
+        {% elif active_list == 'chauffeurs' %}
+        setupSearch('.search-chauffeurs');
+        {% elif active_list == 'voitures' %}
+        setupSearch('.search-voitures');
+        {% endif %}
+
+        // Auto-refresh seulement sur le dashboard principal
+        {% if not active_list and not active_section %}
+        setTimeout(function() {
+            window.location.reload();
+        }, 30000);
+        {% endif %}
+
+        // Script pour l'affichage du nom du fichier sélectionné
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('id_coop-photo');
+            const fileLabel = document.querySelector('.file-input-label');
+            
+            if (fileInput && fileLabel) {
+                fileInput.addEventListener('change', function(e) {
+                    if (this.files && this.files[0]) {
+                        fileLabel.textContent = this.files[0].name;
+                        fileLabel.style.color = '#3498db';
+                        fileLabel.style.borderColor = '#3498db';
+                    } else {
+                        fileLabel.textContent = 'Choisir un fichier';
+                        fileLabel.style.color = '#6c757d';
+                        fileLabel.style.borderColor = '#e0e0e0';
+                    }
+                });
+            }
+
+            // Fermer automatiquement les messages après 5 secondes
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            });
+
+            // Empêcher la double soumission du formulaire
+            const form = document.getElementById('coop-form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    const submitBtn = document.getElementById('submit-btn');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

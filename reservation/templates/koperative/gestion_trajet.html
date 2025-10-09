@@ -1,0 +1,604 @@
+{% extends "koperative/index.html" %}
+{% load static %}
+{% block content %}
+<style>
+    /* Styles communs aux deux tableaux */
+    .content-container {
+        margin-top: 20px;
+        padding: 20px;
+    }
+    
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .titre {
+        color: #195c68;
+        margin: 0;
+    }
+    
+    .btn-ajouter {
+        text-decoration: none;
+        padding: 12px 20px;
+        background-color: #195c68;
+        color: white;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+    
+    .btn-ajouter:hover {
+        background-color: #12434b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-ajouter::before {
+        content: "+";
+        margin-right: 8px;
+        font-size: 18px;
+    }
+    
+    .btn-gestion {
+        text-decoration: none;
+        padding: 12px 20px;
+        background-color: #ff9800;
+        color: white;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .btn-gestion:hover {
+        background-color: #e68900;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Barre de recherche */
+    .search-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .search-bar {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    
+    .search-bar input {
+        padding: 10px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        flex-grow: 1;
+        min-width: 200px;
+        transition: all 0.3s ease;
+    }
+    
+    .search-bar input:focus {
+        outline: none;
+        border-color: #195c68;
+        box-shadow: 0 0 0 3px rgba(25, 92, 104, 0.1);
+    }
+    
+    .search-button {
+        background: linear-gradient(to right, #195c68, #2c8c9e);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 100px;
+    }
+    
+    .search-button:hover {
+        background: linear-gradient(to right, #12434b, #195c68);
+        transform: translateY(-1px);
+    }
+    
+    .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-bottom: 40px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+    
+    thead {
+        background: linear-gradient(135deg, #195c68, #2c8c9e);
+        color: white;
+    }
+    
+    th {
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    tbody tr:hover {
+        background-color: #f8fdfe;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    td {
+        padding: 14px 12px;
+        vertical-align: middle;
+        font-size: 14px;
+    }
+    
+    /* Styles pour les statuts */
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-active {
+        background-color: #e8f5e8;
+        color: #2e7d32;
+    }
+    
+    .status-completed {
+        background-color: #fff3e0;
+        color: #ef6c00;
+    }
+    
+    .status-cancelled {
+        background-color: #ffebee;
+        color: #c62828;
+    }
+    
+    .photo-cell {
+        width: 70px;
+    }
+    
+    .photo-cell img {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        object-fit: cover;
+        border: 2px solid #e0e0e0;
+    }
+    
+    .action-cell {
+        white-space: nowrap;
+    }
+    
+    .btn-action {
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 8px;
+        font-size: 12px;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .btn-manifold {
+        background-color: #2196f3;
+        color: white;
+    }
+    
+    .btn-manifold:hover {
+        background-color: #1976d2;
+        transform: translateY(-1px);
+    }
+    
+    .btn-view {
+        background-color: #4caf50;
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background-color: #3d8b40;
+        transform: translateY(-1px);
+    }
+    
+    .btn-modifier {
+        background-color: #ff9800;
+        color: white;
+    }
+    
+    .btn-modifier:hover {
+        background-color: #e68900;
+        transform: translateY(-1px);
+    }
+    
+    .btn-supprimer {
+        background-color: #f44336;
+        color: white;
+    }
+    
+    .btn-supprimer:hover {
+        background-color: #d32f2f;
+        transform: translateY(-1px);
+    }
+
+    /* Correction pour les boutons dans les liens */
+    .btn-action button {
+        background: none;
+        border: none;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+    }
+    
+    /* Indicateur de chargement */
+    .loader {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .loader::after {
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #195c68;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Styles pour les écrans moyens */
+    @media (max-width: 992px) {
+        .content-container {
+            margin-top: 15px;
+            padding: 15px;
+        }
+        
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .btn-container {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .search-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .search-bar input {
+            width: 100%;
+        }
+    }
+    
+    /* Styles pour les petits écrans */
+    @media (max-width: 768px) {
+        .content-container {
+            margin-top: 10px;
+            padding: 10px;
+        }
+        
+        th, td {
+            padding: 10px 8px;
+            font-size: 13px;
+        }
+        
+        .btn-action {
+            padding: 6px 10px;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+        
+        .photo-cell img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .btn-ajouter, .btn-gestion {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        
+        .action-cell {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    
+    /* Styles pour les très petits écrans */
+    @media (max-width: 480px) {
+        .titre {
+            font-size: 20px;
+        }
+        
+        .btn-container {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .btn-ajouter, .btn-gestion {
+            width: 100%;
+            justify-content: center;
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+        
+        th, td {
+            padding: 8px 6px;
+            font-size: 12px;
+        }
+        
+        .btn-action {
+            padding: 5px 8px;
+            margin-bottom: 5px;
+        }
+    }
+    
+    /* Message d'état vide */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #757575;
+    }
+    
+    .empty-state i {
+        font-size: 50px;
+        margin-bottom: 15px;
+        display: block;
+        color: #ccc;
+    }
+    
+    /* Style pour les lignes alternées */
+    tbody tr:nth-child(even) {
+        background-color: #fafafa;
+    }
+    
+    tbody tr:nth-child(even):hover {
+        background-color: #f0f7f9;
+    }
+</style>
+
+<div class="content-container">
+    <div class="header-section">
+        <h2 class="titre">LISTE DES TRAJETS</h2>
+        <a class="btn-ajouter" href="{% url 'ajouter_trajet' %}">Ajouter un trajet</a>
+    </div>
+
+    <!-- Barre de recherche simplifiée -->
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" id="search_vehicule" placeholder="Numéro du véhicule" value="{{ request.GET.vehicule|default:'' }}">
+            <input type="date" id="search_date_depart" value="{{ request.GET.date_depart|default:'' }}">
+            <button class="search-button" onclick="reinitialiserRecherche()">Réinitialiser</button>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div class="loader" id="loader"></div>
+        
+        {% if trajets_infos %}
+        <table id="trajets-table">
+            <thead>
+                <tr>
+                    <th>Date départ</th>
+                    <th>Heure départ</th>
+                    <th>Lieu départ</th>
+                    <th>Destination</th>
+                    <th>Frais</th>
+                    <th>Voiture</th>
+                    <th>Coopérative</th>
+                    <th>Dernier trajet</th>
+                    <th>Places</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="trajets-body">
+                {% for item in trajets_infos %}
+                <tr class="trajet-row" data-vehicule="{{ item.voiture.matricule|lower }}" data-date="{{ item.trajet.date_depart|date:'Y-m-d' }}">
+                    <td>{{ item.trajet.date_depart }}</td>
+                    <td>{{ item.trajet.heure_depart }}</td>
+                    <td>{{ item.trajet.lieu_depart }}</td>
+                    <td>{{ item.trajet.lieu_destination }}</td>
+                    <td>{{ item.trajet.frais }} Ar</td>
+                    <td>{{ item.voiture.matricule }}</td>
+                    <td>{{ item.voiture.cooperative.nom }}</td>
+                    <td>{{ item.dernier_trajet|default:"-" }}</td>
+                    <td>{{ item.voiture.place }}</td>
+                    <td>
+                        {% now "Y-m-d" as current_date %}
+                        {% if item.trajet.date_depart|date:'Y-m-d' > current_date %}
+                            <span class="status-badge status-active">À venir</span>
+                        {% elif item.trajet.date_depart|date:'Y-m-d' == current_date %}
+                            <span class="status-badge status-active">Aujourd'hui</span>
+                        {% else %}
+                            <span class="status-badge status-completed">Terminé</span>
+                        {% endif %}
+                    </td>
+                    <td class="action-cell">
+                        <a class="btn-action btn-manifold" href="{% url 'creer_manifold' item.trajet.id %}">
+                            Créer Manifold
+                        </a>
+                        <a class="btn-action btn-view" href="{% url 'manifold_detail' item.trajet.id %}">
+                            Voir Manifold
+                        </a>
+                        <a class="btn-action btn-modifier" href="{% url 'modifier_trajet' item.trajet.id %}">Modifier</a>
+                        <a class="btn-action btn-supprimer btn-delete" href="{% url 'supprimer_trajet' item.trajet.id %}" onclick="return confirmDelete(event, this.href);">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-route"></i>
+            <h3>Aucun trajet enregistré</h3>
+            <p>Commencez par ajouter votre premier trajet</p>
+            <a class="btn-ajouter" href="{% url 'ajouter_trajet' %}" style="margin-top: 15px;">Ajouter un trajet</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function confirmDelete(event, url) {
+    event.preventDefault();
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce trajet ?')) {
+        window.location.href = url;
+    }
+    return false;
+}
+
+function rechercherTrajets() {
+    const vehicule = document.getElementById('search_vehicule').value.toLowerCase();
+    const dateDepart = document.getElementById('search_date_depart').value;
+    
+    const rows = document.querySelectorAll('.trajet-row');
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        const rowVehicule = row.getAttribute('data-vehicule');
+        const rowDate = row.getAttribute('data-date');
+        
+        const matchVehicule = !vehicule || rowVehicule.includes(vehicule);
+        const matchDate = !dateDepart || rowDate === dateDepart;
+        
+        if (matchVehicule && matchDate) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Afficher un message si aucun résultat
+    const emptyState = document.querySelector('.empty-state');
+    const table = document.querySelector('table');
+    
+    if (visibleCount === 0 && rows.length > 0) {
+        if (!emptyState) {
+            const newEmptyState = document.createElement('div');
+            newEmptyState.className = 'empty-state';
+            newEmptyState.innerHTML = `
+                <i class="fas fa-search"></i>
+                <h3>Aucun trajet trouvé</h3>
+                <p>Aucun trajet ne correspond à vos critères de recherche</p>
+                <button class="btn-ajouter" onclick="reinitialiserRecherche()" style="margin-top: 15px; border: none; cursor: pointer;">Réinitialiser la recherche</button>
+            `;
+            table.parentNode.insertBefore(newEmptyState, table);
+            table.style.display = 'none';
+        }
+    } else {
+        if (emptyState && emptyState.querySelector('.fa-search')) {
+            emptyState.remove();
+        }
+        if (table) {
+            table.style.display = '';
+        }
+    }
+}
+
+function reinitialiserRecherche() {
+    document.getElementById('search_vehicule').value = '';
+    document.getElementById('search_date_depart').value = '';
+    
+    const rows = document.querySelectorAll('.trajet-row');
+    rows.forEach(row => {
+        row.style.display = '';
+    });
+    
+    const emptyState = document.querySelector('.empty-state');
+    const table = document.querySelector('table');
+    
+    if (emptyState && emptyState.querySelector('.fa-search')) {
+        emptyState.remove();
+    }
+    if (table) {
+        table.style.display = '';
+    }
+}
+
+// Recherche en temps réel avec debounce
+function debounce(func, delay) {
+    let timer;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// Écouteurs d'événements pour la recherche en temps réel
+const searchVehicule = document.getElementById('search_vehicule');
+const searchDate = document.getElementById('search_date_depart');
+
+searchVehicule.addEventListener('input', debounce(rechercherTrajets, 300));
+searchDate.addEventListener('input', debounce(rechercherTrajets, 300));
+searchDate.addEventListener('change', debounce(rechercherTrajets, 300));
+
+// Appliquer la recherche si des paramètres sont présents dans l'URL
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehicule = urlParams.get('vehicule');
+    const dateDepart = urlParams.get('date_depart');
+    
+    if (vehicule || dateDepart) {
+        if (vehicule) document.getElementById('search_vehicule').value = vehicule;
+        if (dateDepart) document.getElementById('search_date_depart').value = dateDepart;
+        
+        // Lancer la recherche après un court délai pour laisser le DOM se charger
+        setTimeout(rechercherTrajets, 100);
+    }
+    
+    // Focus sur le champ de recherche véhicule
+    searchVehicule.focus();
+});
+</script>
+
+<!-- Font Awesome pour les icônes -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+{% endblock content %}

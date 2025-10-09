@@ -1,0 +1,39 @@
+# Fichiers Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+
+# Environnements virtuels
+env/
+venv/
+ENV/
+.venv/
+MV/
+
+
+# Base de données locale
+db.sqlite3
+
+# PostgreSQL dumps
+*.sql
+
+# Fichiers/Dossiers Django
+/static/
+media/
+
+# Config et secrets
+*.env
+.env
+config.json
+
+# IDE / Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/

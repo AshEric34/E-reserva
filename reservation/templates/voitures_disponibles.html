@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Voitures disponibles</h2>
+{% for voiture in voitures %}
+    <div class="voiture">
+        <h3>{{ voiture.numero_voiture }}</h3>
+        <p>Chauffeur: {{ voiture.nom_chauffeur }} ({{ voiture.numero_chauffeur }})</p>
+        <p>Départ: {{ voiture.date_depart }} à {{ voiture.heure_depart }}</p>
+        <p>Frais: {{ voiture.frais }} Ar</p>
+        <a href="{% url 'selection_place' voiture.id %}">Choisir une place</a>
+    </div>
+{% empty %}
+    <p>Aucune voiture disponible pour ce trajet.</p>
+{% endfor %}
+{% endblock %}
