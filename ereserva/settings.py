@@ -30,9 +30,13 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['https://stellar-illumination.up.railway.app/']
 
 AUTH_USER_MODEL = 'reservation.User'
 # Application definition
@@ -135,6 +139,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Dossier où collectstatic va copier tous les fichiers statiques
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Dossiers supplémentaires contenant des fichiers statiques en développement
 
