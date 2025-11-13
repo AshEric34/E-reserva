@@ -116,12 +116,12 @@ WSGI_APPLICATION = 'ereserva.wsgi.application'
 
 # Configuration base de données
 if os.environ.get('DATABASE_URL'):
-    # ✅ Mode Production (Railway)
+    #  Mode Production (Railway)
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
 else:
-    # 💻 Mode Développement local
+    #  Mode Développement local
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

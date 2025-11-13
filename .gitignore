@@ -20,8 +20,6 @@ db.sqlite3
 *.sql
 
 # Fichiers/Dossiers Django
-/static/
-media/
 
 # Config et secrets
 *.env
