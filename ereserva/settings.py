@@ -13,8 +13,8 @@ from pathlib import Path
 import os
 import dj_database_url
 
-from dotenv import load_dotenv
-load_dotenv()  # Charger les variables d'environnement depuis le fichier .env
+# from dotenv import load_dotenv
+# load_dotenv()  # Charger les variables d'environnement depuis le fichier .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.c
 BASE_DIR = Path(__file__).resolve().parent.parent
