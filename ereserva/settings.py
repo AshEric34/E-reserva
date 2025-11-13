@@ -34,13 +34,8 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 # ALLOWED_HOSTS = ['*']
 
-DEBUG = False
-
-ALLOWED_HOSTS = ['localhost',
-    '127.0.0.1', 
-    '.railway.app',
-    '.up.railway.app',
-    os.environ.get('RAILWAY_STATIC_URL', ''),]
+ALLOWED_HOSTS = ['*']
+DEBUG = True
 
 AUTH_USER_MODEL = 'reservation.User'
 # Application definition
