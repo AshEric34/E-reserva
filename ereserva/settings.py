@@ -13,8 +13,8 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# from dotenv import load_dotenv
-# load_dotenv()  # Charger les variables d'environnement depuis le fichier .env
+from dotenv import load_dotenv
+load_dotenv()  # Charger les variables d'environnement depuis le fichier .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.c
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,7 +128,7 @@ else:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.environ.get('DB_NAME'),
             'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASSWORD'),  # à changer
+            'PASSWORD': os.environ.get('DB_PASSWORD'), 
             'HOST': os.environ.get('DB_HOST'),
             'PORT': os.environ.get('DB_PORT'),
         }
