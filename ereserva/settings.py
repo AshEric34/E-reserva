@@ -114,21 +114,20 @@ WSGI_APPLICATION = 'ereserva.wsgi.application'
 #     }
 # }
 
-# Configuration DATABASE pour Railway (1 seule ligne)
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    # Production (Railway)
+# Configuration base de données
+if os.environ.get('DATABASE_URL'):
+    # ✅ Mode Production (Railway)
     DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
 else:
-    # Développement local
+    # 💻 Mode Développement local
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.environ.get('DB_NAME'),
             'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASSWORD'), 
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
             'HOST': os.environ.get('DB_HOST'),
             'PORT': os.environ.get('DB_PORT'),
         }
