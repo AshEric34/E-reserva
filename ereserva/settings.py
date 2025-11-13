@@ -16,7 +16,7 @@ import dj_database_url
 from dotenv import load_dotenv
 load_dotenv()  # Charger les variables d'environnement depuis le fichier .env
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / 'subdir'.c
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -132,6 +132,14 @@ STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Dossier où collectstatic va copier tous les fichiers statiques
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Dossiers supplémentaires contenant des fichiers statiques en développement
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  
+]
 
 LOGIN_URL = '/connexion/'
 
