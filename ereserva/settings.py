@@ -137,9 +137,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Dossiers supplémentaires contenant des fichiers statiques en développement
-STATICFILES_DIRS = [
-    BASE_DIR / "static",  
-]
 
 LOGIN_URL = '/connexion/'
 
