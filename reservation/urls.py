@@ -13,7 +13,7 @@ urlpatterns = [
     path('logout/', deconnexion, name='logout'),
     path('administrateur/', homeAdministrateur, name='administrateur'),
     path('administrateur/download-ticket/', download_cooperative_ticket, name='download_ticket'),
-    # URLs pour les coopératives
+
     path('administrateur/ajouter-cooperative/', ajouter_cooperative, name='ajouter_cooperative'),
     path('administrateur/cooperative/<int:pk>/modifier/', modifier_cooperative, name='modifier_cooperative'),
     path('administrateur/cooperative/<int:pk>/supprimer/', supprimer_cooperative, name='supprimer_cooperative'),
@@ -22,7 +22,7 @@ urlpatterns = [
     path('administrateur/chauffeurs/', liste_chauffeurs, name='liste_chauffeurs'),
     path('administrateur/voitures/', liste_voitures, name='liste_voitures'),
     path('koperative/', homeCooperative, name='koperative'),
-    path('koperative/gestion_voiture/', gestionVoiture, name='gestion_voiture'),#lister les voiture
+    path('koperative/gestion_voiture/', gestionVoiture, name='gestion_voiture'),
     path('koperative/gestion_chauffeur/', gestionChauffeur, name='gestion_chauffeur'),
     path('koperative/gestion_trajet/', gestionTrajet, name='gestion_trajet'),
     path('koperative/historique_reservation/', historiqueReservation, name='historique_reservation'),

@@ -394,7 +394,7 @@ def supprimer_cooperative(request, pk):
         user.delete()
         
         messages.success(request, "Coopérative supprimée avec succès !")
-        return redirect('administrateur')  # Retour simple sans concaténation
+        return redirect('administrateur') 
     
     # Si c'est une requête GET, on ne devrait pas arriver ici avec SweetAlert
     # Mais on redirige quand même vers la liste
