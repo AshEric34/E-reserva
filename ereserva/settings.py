@@ -34,6 +34,13 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 # ALLOWED_HOSTS = ['*']
 
+# Security settings for Railway
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
 ALLOWED_HOSTS = ['*']
 DEBUG = True
 
@@ -48,6 +55,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'reservation',
+]
+
+# CSRF et CORS settings pour Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://e-reserva-production.up.railway.app',
+    'https://*.up.railway.app',
+    'https://*.railway.app',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://e-reserva-production.up.railway.app',
+    'https://*.up.railway.app',
 ]
 
 MIDDLEWARE = [
