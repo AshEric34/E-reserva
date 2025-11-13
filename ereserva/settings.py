@@ -131,15 +131,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Dossier où collectstatic va copier tous les fichiers statiques
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Ajoute le chemin de ton app reservation
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "static",  # Garde si tu as des statics à la racine
+    BASE_DIR / "reservation" / "static", 
 ]
 
 # Dossiers supplémentaires contenant des fichiers statiques en développement
