@@ -203,12 +203,25 @@
             
                         <!-- Date naissance -->
                         <div class="form-group" style="--i: 1">
-                            <label for="{{ utilisateur_form.date_naissance.id_for_label }}">Date de naissance</label>
-                            <div class="input-with-icon">
+                            <label for="date_naissance">Date de naissance</label>
+                            <div class="input-with-icon date-input-container">
                                 <i class="fas fa-calendar"></i>
-                                {{ utilisateur_form.date_naissance }}
+                                <input type="date" 
+                                       id="date_naissance" 
+                                       name="date_naissance"
+                                       min="1900-01-01"
+                                       max="{% now 'Y-m-d' %}"
+                                       required
+                                       value="{{ utilisateur_form.date_naissance.value|default:'' }}"
+                                       style="background: rgba(255, 255, 255, 0.08); color: white; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 40px 10px 40px; width: 100%;">
+                                <i class="fas fa-calendar-alt date-calendar-icon"></i>
                             </div>
+                            {% if utilisateur_form.date_naissance.errors %}
                             <div class="error">{{ utilisateur_form.date_naissance.errors }}</div>
+                            {% endif %}
+                            <small style="color: #ffdd40; font-size: 12px; margin-top: 5px; display: block;">
+                                💡 <strong>Astuce :</strong> Sur mobile, utilisez le sélecteur d'année pour remonter rapidement à 1969
+                            </small>
                         </div>
             
                         <!-- Lieu naissance -->

@@ -11,10 +11,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px;
+    padding: 20px;
     color: white;
+    line-height: 1.6;
 }
 
+/* ===== CONTAINER PRINCIPAL ===== */
 .container {
     width: 100%;
     max-width: 1000px;
@@ -37,11 +39,12 @@ body {
     }
 }
 
+/* ===== SECTION BIENVENUE ===== */
 .welcome-section {
     flex: 1;
     min-width: 300px;
     background: linear-gradient(135deg, #277DBE, #1a2a6c);
-    padding: 30px 25px;
+    padding: 40px 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -73,16 +76,13 @@ body {
 
 .logo {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .logo h2 {
-    font-size: 24px;
+    font-size: 28px;
     color: #ffdd40;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .welcome-content {
@@ -91,9 +91,9 @@ body {
 }
 
 .welcome-content p {
-    line-height: 1.5;
-    margin-bottom: 15px;
-    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 16px;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
@@ -113,20 +113,19 @@ body {
 }
 
 .features {
-    margin-top: 25px;
+    margin-top: 30px;
 }
 
 .feature {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
-    font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .feature i {
     color: #ffdd40;
-    margin-right: 8px;
-    font-size: 16px;
+    margin-right: 10px;
+    font-size: 18px;
     flex-shrink: 0;
 }
 
@@ -135,29 +134,29 @@ body {
     overflow-wrap: break-word;
 }
 
+/* ===== SECTION FORMULAIRE ===== */
 .form-section {
     flex: 2;
-    min-width: 300px;
-    padding: 25px 20px;
+    min-width: 400px;
+    padding: 30px;
     background: rgba(255, 255, 255, 0.02);
 }
 
 .form-header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .form-header h2 {
     color: #ffdd40;
-    font-size: 22px;
-    margin-bottom: 8px;
+    font-size: 24px;
+    margin-bottom: 10px;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 .form-header p {
     color: #ccc;
-    font-size: 14px;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
@@ -165,32 +164,32 @@ body {
 .form-columns {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
 }
 
 .form-column {
     flex: 1;
-    min-width: 280px;
+    min-width: 300px;
 }
 
 .form-column h3 {
     color: #ffdd40;
-    margin-bottom: 15px;
-    padding-bottom: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 2px solid rgba(255, 221, 64, 0.3);
-    font-size: 17px;
+    font-size: 18px;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     position: relative;
 }
 
 label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     font-weight: 600;
     color: #ffdd40;
     font-size: 14px;
@@ -204,116 +203,113 @@ label {
 
 .input-with-icon i {
     position: absolute;
-    left: 12px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
     color: #777;
-    font-size: 14px;
+    font-size: 16px;
 }
 
+/* ===== CHAMPS DE FORMULAIRE ===== */
 input[type="text"],
 input[type="email"],
 input[type="password"],
-input[type="date"] {
+input[type="date"],
+select {
     width: 100%;
-    padding: 10px 12px 10px 40px;
+    padding: 12px 15px 12px 45px;
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 16px;
     background: rgba(255, 255, 255, 0.08);
     color: white;
     transition: all 0.3s ease;
-}
-
-input[type="date"] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
 }
 
-input[type="date"]:not(:valid):before {
-    content: attr(placeholder);
-    color: #aaa;
-    position: absolute;
-    left: 45px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23777' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+    padding-right: 40px;
 }
 
-/* Style amélioré pour le champ date */
-.date-input-container {
-    position: relative;
-}
-
-.date-input-container input[type="date"] {
-    padding-right: 40px; /* Espace pour l'icône calendrier */
-}
-
-.date-calendar-icon {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #777;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.date-text-input {
-    width: 100%;
-    padding: 10px 12px 10px 40px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    font-size: 15px;
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
-    transition: all 0.3s ease;
-}
-
-@media (max-width: 768px) {
-    /* Forcer l'affichage du placeholder sur mobile */
-    input[type="date"]::before {
-        content: attr(placeholder);
-        color: #aaa;
-        margin-right: 10px;
-    }
-
-    /* Cacher le placeholder quand la date est sélectionnée */
-    input[type="date"]:valid::before {
-        display: none;
-    }
-}
-
-input:focus {
+input:focus,
+select:focus {
     outline: none;
     border-color: #ffdd40;
     box-shadow: 0 0 0 3px rgba(255, 221, 64, 0.2);
     background: rgba(255, 255, 255, 0.12);
 }
 
+/* ===== CHAMP DATE AMÉLIORÉ ===== */
+.date-input-container {
+    position: relative;
+}
+
+.date-input-container input[type="date"] {
+    padding-right: 40px;
+}
+
+.date-calendar-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    pointer-events: none;
+    font-size: 16px;
+}
+
+/* ===== CHAMPS DATE SÉPARÉS ===== */
+.date-fields-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.date-field {
+    flex: 1;
+}
+
+.date-field label {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+.date-field select {
+    padding: 10px 8px;
+    font-size: 14px;
+}
+
+/* ===== MESSAGES D'ERREUR ET SUCCÈS ===== */
 .error {
     color: #ff6b6b;
-    font-size: 12px;
-    margin-top: 4px;
+    font-size: 14px;
+    margin-top: 5px;
     display: flex;
     align-items: center;
 }
 
 .error i {
     margin-right: 5px;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .success {
     color: #4CAF50;
-    font-size: 12px;
-    margin-top: 4px;
+    font-size: 14px;
+    margin-top: 5px;
 }
 
+/* ===== INDICATEUR DE FORCE DU MOT DE PASSE ===== */
 .password-strength {
-    margin-top: 4px;
-    height: 4px;
+    margin-top: 5px;
+    height: 5px;
     border-radius: 5px;
     background: #333;
     overflow: hidden;
@@ -331,22 +327,23 @@ input:focus {
 .strong { background: #2ed573; width: 100%; }
 
 .password-info {
-    font-size: 11px;
+    font-size: 12px;
     color: #aaa;
-    margin-top: 4px;
-    line-height: 1.3;
+    margin-top: 5px;
+    line-height: 1.4;
 }
 
+/* ===== BOUTON ===== */
 button {
     background: linear-gradient(to right, #ffdd40, #ffa500);
     color: #1a2a6c;
     border: none;
-    padding: 12px 25px;
-    font-size: 15px;
+    padding: 15px 30px;
+    font-size: 16px;
     border-radius: 50px;
     cursor: pointer;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 20px;
     font-weight: bold;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -356,8 +353,7 @@ button {
 }
 
 button i {
-    margin-right: 8px;
-    font-size: 14px;
+    margin-right: 10px;
 }
 
 button:hover {
@@ -370,187 +366,74 @@ button:active {
     transform: translateY(0);
 }
 
-/* Responsive amélioré */
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-        align-items: flex-start;
-    }
-    
-    .container {
-        flex-direction: column;
-        margin: 10px 0;
-        max-width: 100%;
-    }
-    
-    .welcome-section, .form-section {
-        width: 100%;
-        min-width: 100%;
-    }
-    
-    .welcome-section {
-        padding: 25px 20px;
-    }
-    
-    .form-section {
-        padding: 20px 15px;
-    }
-    
-    .form-columns {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .form-column {
-        min-width: 100%;
-    }
-    
-    .logo h2 {
-        font-size: 22px;
-    }
-    
-    .form-header h2 {
-        font-size: 20px;
-    }
-    
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="date"] {
-        padding: 10px 10px 10px 35px;
-        font-size: 14px;
-    }
-    
-    .input-with-icon i {
-        left: 10px;
-        font-size: 13px;
-    }
-    
-    button {
-        padding: 12px 20px;
-        font-size: 14px;
-    }
+/* ===== MESSAGES D'ALERTE ===== */
+.messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 400px;
 }
 
-@media (max-width: 480px) {
-    body {
-        padding: 5px;
-    }
-    
-    .container {
-        margin: 5px 0;
-        border-radius: 10px;
-    }
-    
-    .welcome-section, .form-section {
-        padding: 20px 15px;
-    }
-    
-    .logo h2 {
-        font-size: 20px;
-    }
-    
-    .welcome-content p {
-        font-size: 14px;
-    }
-    
-    .feature {
-        font-size: 13px;
-    }
-    
-    .feature i {
-        font-size: 14px;
-    }
-    
-    .form-header h2 {
-        font-size: 18px;
-    }
-    
-    .form-header p {
-        font-size: 13px;
-    }
-    
-    .form-column h3 {
-        font-size: 16px;
-    }
-    
-    label {
-        font-size: 13px;
-    }
-    
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="date"] {
-        padding: 9px 9px 9px 32px;
-        font-size: 13px;
-    }
-    
-    .input-with-icon i {
-        left: 9px;
-        font-size: 12px;
-    }
-    
-    button {
-        padding: 11px 18px;
-        font-size: 13px;
-    }
-    
-    .messages-container {
-        max-width: 90%;
-        right: 5%;
-    }
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease-out;
+    border-left: 4px solid;
 }
 
-@media (max-width: 360px) {
-    .welcome-section, .form-section {
-        padding: 15px 12px;
-    }
-    
-    .logo h2 {
-        font-size: 18px;
-    }
-    
-    .welcome-content p {
-        font-size: 13px;
-    }
-    
-    .feature {
-        font-size: 12px;
-    }
-    
-    .form-header h2 {
-        font-size: 17px;
-    }
-    
-    .form-column h3 {
-        font-size: 15px;
-    }
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left-color: #28a745;
 }
 
-/* Animations pour les inputs */
-.form-group {
-    opacity: 0;
-    transform: translateX(-20px);
-    animation: slideIn 0.5s ease forwards;
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left-color: #dc3545;
 }
 
-.form-column:nth-child(1) .form-group {
-    animation-delay: calc(0.1s * var(--i));
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.form-column:nth-child(2) .form-group {
-    animation-delay: calc(0.1s * (var(--i) + 5));
+.alert-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@keyframes slideIn {
+.alert-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
     to {
-        opacity: 1;
         transform: translateX(0);
+        opacity: 1;
     }
 }
 
-/* Boîte de dialogue de succès */
+/* ===== DIALOGUE DE SUCCÈS ===== */
 .success-dialog {
     display: none;
     position: fixed;
@@ -573,10 +456,10 @@ button:active {
 
 .dialog-content {
     background: white;
-    padding: 30px;
+    padding: 40px;
     border-radius: 15px;
     text-align: center;
-    max-width: 400px;
+    max-width: 450px;
     width: 90%;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
@@ -591,34 +474,30 @@ button:active {
 }
 
 .dialog-icon {
-    font-size: 50px;
+    font-size: 60px;
     color: #4CAF50;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .dialog-content h3 {
     color: #1a2a6c;
-    margin-bottom: 12px;
-    font-size: 22px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    margin-bottom: 15px;
+    font-size: 24px;
 }
 
 .dialog-content p {
     color: #555;
-    margin-bottom: 20px;
-    line-height: 1.5;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    margin-bottom: 25px;
+    line-height: 1.6;
 }
 
 .dialog-button {
     background: linear-gradient(to right, #4CAF50, #2E7D32);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border-radius: 50px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -630,7 +509,28 @@ button:active {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Animation d'erreur */
+/* ===== ANIMATIONS ===== */
+.form-group {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideIn 0.5s ease forwards;
+}
+
+.form-column:nth-child(1) .form-group {
+    animation-delay: calc(0.1s * var(--i));
+}
+
+.form-column:nth-child(2) .form-group {
+    animation-delay: calc(0.1s * (var(--i) + 5));
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .error-animation {
     animation: shake 0.5s ease;
 }
@@ -639,4 +539,228 @@ button:active {
     0%, 100% { transform: translateX(0); }
     20%, 60% { transform: translateX(-8px); }
     40%, 80% { transform: translateX(8px); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+        align-items: flex-start;
+    }
+    
+    .container {
+        flex-direction: column;
+        margin: 10px 0;
+    }
+    
+    .welcome-section, .form-section {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    .welcome-section {
+        padding: 30px 25px;
+    }
+    
+    .form-section {
+        padding: 25px 20px;
+    }
+    
+    .form-columns {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .form-column {
+        min-width: 100%;
+    }
+    
+    .logo h2 {
+        font-size: 24px;
+    }
+    
+    .form-header h2 {
+        font-size: 22px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    select {
+        padding: 12px 12px 12px 40px;
+        font-size: 16px; /* Évite le zoom sur iOS */
+    }
+    
+    .input-with-icon i {
+        left: 12px;
+    }
+    
+    .date-input-container input[type="date"] {
+        padding-right: 35px;
+    }
+    
+    .date-calendar-icon {
+        right: 12px;
+    }
+    
+    .date-fields-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    button {
+        padding: 14px 25px;
+    }
+    
+    .messages-container {
+        max-width: 90%;
+        right: 5%;
+        left: 5%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        margin: 5px 0;
+        border-radius: 10px;
+    }
+    
+    .welcome-section, .form-section {
+        padding: 25px 20px;
+    }
+    
+    .logo h2 {
+        font-size: 22px;
+    }
+    
+    .welcome-content p {
+        font-size: 15px;
+    }
+    
+    .feature {
+        font-size: 14px;
+    }
+    
+    .feature i {
+        font-size: 16px;
+    }
+    
+    .form-header h2 {
+        font-size: 20px;
+    }
+    
+    .form-header p {
+        font-size: 14px;
+    }
+    
+    .form-column h3 {
+        font-size: 17px;
+    }
+    
+    label {
+        font-size: 13px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    select {
+        padding: 11px 11px 11px 38px;
+        font-size: 15px;
+    }
+    
+    .input-with-icon i {
+        left: 11px;
+        font-size: 15px;
+    }
+    
+    button {
+        padding: 13px 22px;
+        font-size: 15px;
+    }
+    
+    .dialog-content {
+        padding: 30px 25px;
+    }
+    
+    .dialog-icon {
+        font-size: 50px;
+    }
+    
+    .dialog-content h3 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 360px) {
+    .welcome-section, .form-section {
+        padding: 20px 15px;
+    }
+    
+    .logo h2 {
+        font-size: 20px;
+    }
+    
+    .welcome-content p {
+        font-size: 14px;
+    }
+    
+    .feature {
+        font-size: 13px;
+    }
+    
+    .form-header h2 {
+        font-size: 18px;
+    }
+    
+    .form-column h3 {
+        font-size: 16px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    select {
+        padding: 10px 10px 10px 35px;
+    }
+}
+
+/* ===== PLACEHOLDER PERSONNALISÉ ===== */
+::placeholder {
+    color: #aaa;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: #aaa;
+}
+
+::-ms-input-placeholder {
+    color: #aaa;
+}
+
+/* ===== SCROLLBAR PERSONNALISÉ ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ffdd40;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ffa500;
 }
