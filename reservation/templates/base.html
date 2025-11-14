@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserveo - Accueil</title>
   <link rel="stylesheet" href="{% static "reservation/css/style.css" %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
 
   </style>
@@ -45,14 +46,7 @@
       </div>
     </div>
   </section>
-  
-  <section class="testimonials">
-    <h2>Ce que disent nos clients</h2>
-    <div class="testimonial-card">
-      <p>"Grâce à e-Reserva, plus besoin de me rendre en gare des heures à l'avance. Je réserve mon taxi-brousse depuis mon canapé et j'arrive à l'heure du départ. Un vrai gain de temps !"</p>
-      <p><strong>Marie, Antananarivo</strong></p>
-    </div>
-  </section>
+
   
   <footer>
     <h1>À propos de nous</h1>
@@ -78,28 +72,12 @@
   });
   </script>
   {% endif %}
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  {% if messages %}
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      {% for message in messages %}
-          Swal.fire({
-              icon: 'success',
-              title: '{{ message }}',
-              showConfirmButton: false,
-              timer: 2000
-          });
-      {% endfor %}
-  });
-  </script>
-{% endif %}
   <script>
     // Animation au défilement
     document.addEventListener('DOMContentLoaded', function() {
       const header = document.getElementById('main-header');
       const mainText = document.getElementById('main-text');
       const featureCards = document.querySelectorAll('.feature-card');
-      const testimonialCard = document.querySelector('.testimonial-card');
       
       // Animation initiale du texte principal
       setTimeout(() => {
@@ -123,14 +101,6 @@
             card.classList.add('visible');
           }
         });
-        
-        // Animation de la carte témoignage
-        const testimonialPosition = testimonialCard.getBoundingClientRect().top;
-        const screenPosition = window.innerHeight / 1.3;
-        
-        if (testimonialPosition < screenPosition) {
-          testimonialCard.classList.add('visible');
-        }
       });
     });
   </script>
