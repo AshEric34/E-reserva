@@ -82,6 +82,7 @@ header {
 
 .texte h1 strong {
   color: #fdbb2d;
+  white-space: nowrap; /* Empêche le retour à la ligne */
 }
 
 .texte h2 {
@@ -215,6 +216,11 @@ footer h1 {
     line-height: 1.2;
   }
   
+  .texte h1 strong {
+    font-size: 2rem; /* Même taille que le reste du titre */
+    white-space: nowrap; /* Garde "e-Reserva" sur une seule ligne */
+  }
+  
   .texte h2 {
     font-size: 1.5rem;
     line-height: 1.3;
@@ -260,6 +266,11 @@ footer h1 {
     line-height: 1.2;
   }
   
+  .texte h1 strong {
+    font-size: 1.8rem; /* Même taille que le reste du titre */
+    white-space: nowrap; /* Garde "e-Reserva" sur une seule ligne */
+  }
+  
   .texte h2 {
     font-size: 1.3rem;
     line-height: 1.3;
@@ -283,5 +294,16 @@ footer h1 {
       linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(46, 45, 45, 0.7)),
       url("../images/fond3.png") no-repeat center center/cover;
     background-attachment: scroll;
+  }
+}
+
+/* Correction spécifique pour les très petits écrans */
+@media (max-width: 360px) {
+  .texte h1 {
+    font-size: 1.6rem;
+  }
+  
+  .texte h1 strong {
+    font-size: 1.6rem;
   }
 }

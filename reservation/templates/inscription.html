@@ -9,81 +9,81 @@
     <link rel="stylesheet" href="{% static 'reservation/css/inscription.css' %}">
     <style>
         /* Styles pour les messages d'alerte */
-.messages-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    max-width: 400px;
-}
+        .messages-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
 
-.alert {
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: slideInRight 0.3s ease-out;
-    border-left: 4px solid;
-}
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.3s ease-out;
+            border-left: 4px solid;
+        }
 
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border-left-color: #28a745;
-}
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
 
-.alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-left-color: #dc3545;
-}
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
 
-.alert-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.alert-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-left: auto;
-    color: inherit;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-}
+        .alert-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: auto;
+            color: inherit;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
 
-.alert-close:hover {
-    opacity: 1;
-}
+        .alert-close:hover {
+            opacity: 1;
+        }
 
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 
-/* Animation de disparition */
-.alert.fade-out {
-    animation: slideOutRight 0.3s ease-in forwards;
-}
+        /* Animation de disparition */
+        .alert.fade-out {
+            animation: slideOutRight 0.3s ease-in forwards;
+        }
 
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-}
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>

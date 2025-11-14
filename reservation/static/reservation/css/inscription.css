@@ -11,7 +11,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 15px;
     color: white;
 }
 
@@ -41,7 +41,7 @@ body {
     flex: 1;
     min-width: 300px;
     background: linear-gradient(135deg, #277DBE, #1a2a6c);
-    padding: 40px 30px;
+    padding: 30px 25px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -73,13 +73,16 @@ body {
 
 .logo {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .logo h2 {
-    font-size: 28px;
+    font-size: 24px;
     color: #ffdd40;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .welcome-content {
@@ -88,9 +91,11 @@ body {
 }
 
 .welcome-content p {
-    line-height: 1.6;
-    margin-bottom: 20px;
-    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    font-size: 15px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .welcome-content a {
@@ -108,72 +113,89 @@ body {
 }
 
 .features {
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 .feature {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    font-size: 14px;
 }
 
 .feature i {
     color: #ffdd40;
-    margin-right: 10px;
-    font-size: 18px;
+    margin-right: 8px;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.feature span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .form-section {
     flex: 2;
-    min-width: 400px;
-    padding: 30px;
+    min-width: 300px;
+    padding: 25px 20px;
     background: rgba(255, 255, 255, 0.02);
 }
 
 .form-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .form-header h2 {
     color: #ffdd40;
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 22px;
+    margin-bottom: 8px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .form-header p {
     color: #ccc;
+    font-size: 14px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .form-columns {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 15px;
 }
 
 .form-column {
     flex: 1;
-    min-width: 300px;
+    min-width: 280px;
 }
 
 .form-column h3 {
     color: #ffdd40;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
     border-bottom: 2px solid rgba(255, 221, 64, 0.3);
-    font-size: 18px;
+    font-size: 17px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     position: relative;
 }
 
 label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-weight: 600;
     color: #ffdd40;
+    font-size: 14px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .input-with-icon {
@@ -182,10 +204,11 @@ label {
 
 .input-with-icon i {
     position: absolute;
-    left: 15px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: #777;
+    font-size: 14px;
 }
 
 input[type="text"],
@@ -193,10 +216,10 @@ input[type="email"],
 input[type="password"],
 input[type="date"] {
     width: 100%;
-    padding: 12px 15px 12px 45px;
+    padding: 10px 12px 10px 40px;
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 15px;
     background: rgba(255, 255, 255, 0.08);
     color: white;
     transition: all 0.3s ease;
@@ -211,25 +234,26 @@ input:focus {
 
 .error {
     color: #ff6b6b;
-    font-size: 14px;
-    margin-top: 5px;
+    font-size: 12px;
+    margin-top: 4px;
     display: flex;
     align-items: center;
 }
 
 .error i {
     margin-right: 5px;
+    font-size: 12px;
 }
 
 .success {
     color: #4CAF50;
-    font-size: 14px;
-    margin-top: 5px;
+    font-size: 12px;
+    margin-top: 4px;
 }
 
 .password-strength {
-    margin-top: 5px;
-    height: 5px;
+    margin-top: 4px;
+    height: 4px;
     border-radius: 5px;
     background: #333;
     overflow: hidden;
@@ -247,21 +271,22 @@ input:focus {
 .strong { background: #2ed573; width: 100%; }
 
 .password-info {
-    font-size: 12px;
+    font-size: 11px;
     color: #aaa;
-    margin-top: 5px;
+    margin-top: 4px;
+    line-height: 1.3;
 }
 
 button {
     background: linear-gradient(to right, #ffdd40, #ffa500);
     color: #1a2a6c;
     border: none;
-    padding: 15px 30px;
-    font-size: 16px;
+    padding: 12px 25px;
+    font-size: 15px;
     border-radius: 50px;
     cursor: pointer;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 15px;
     font-weight: bold;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -271,7 +296,8 @@ button {
 }
 
 button i {
-    margin-right: 10px;
+    margin-right: 8px;
+    font-size: 14px;
 }
 
 button:hover {
@@ -284,18 +310,161 @@ button:active {
     transform: translateY(0);
 }
 
-/* Responsive */
+/* Responsive amélioré */
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+    
     .container {
         flex-direction: column;
+        margin: 10px 0;
+        max-width: 100%;
     }
     
     .welcome-section, .form-section {
         width: 100%;
+        min-width: 100%;
+    }
+    
+    .welcome-section {
+        padding: 25px 20px;
+    }
+    
+    .form-section {
+        padding: 20px 15px;
     }
     
     .form-columns {
         flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-column {
+        min-width: 100%;
+    }
+    
+    .logo h2 {
+        font-size: 22px;
+    }
+    
+    .form-header h2 {
+        font-size: 20px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"] {
+        padding: 10px 10px 10px 35px;
+        font-size: 14px;
+    }
+    
+    .input-with-icon i {
+        left: 10px;
+        font-size: 13px;
+    }
+    
+    button {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .container {
+        margin: 5px 0;
+        border-radius: 10px;
+    }
+    
+    .welcome-section, .form-section {
+        padding: 20px 15px;
+    }
+    
+    .logo h2 {
+        font-size: 20px;
+    }
+    
+    .welcome-content p {
+        font-size: 14px;
+    }
+    
+    .feature {
+        font-size: 13px;
+    }
+    
+    .feature i {
+        font-size: 14px;
+    }
+    
+    .form-header h2 {
+        font-size: 18px;
+    }
+    
+    .form-header p {
+        font-size: 13px;
+    }
+    
+    .form-column h3 {
+        font-size: 16px;
+    }
+    
+    label {
+        font-size: 13px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"] {
+        padding: 9px 9px 9px 32px;
+        font-size: 13px;
+    }
+    
+    .input-with-icon i {
+        left: 9px;
+        font-size: 12px;
+    }
+    
+    button {
+        padding: 11px 18px;
+        font-size: 13px;
+    }
+    
+    .messages-container {
+        max-width: 90%;
+        right: 5%;
+    }
+}
+
+@media (max-width: 360px) {
+    .welcome-section, .form-section {
+        padding: 15px 12px;
+    }
+    
+    .logo h2 {
+        font-size: 18px;
+    }
+    
+    .welcome-content p {
+        font-size: 13px;
+    }
+    
+    .feature {
+        font-size: 12px;
+    }
+    
+    .form-header h2 {
+        font-size: 17px;
+    }
+    
+    .form-column h3 {
+        font-size: 15px;
     }
 }
 
@@ -344,10 +513,10 @@ button:active {
 
 .dialog-content {
     background: white;
-    padding: 40px;
+    padding: 30px;
     border-radius: 15px;
     text-align: center;
-    max-width: 450px;
+    max-width: 400px;
     width: 90%;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
@@ -362,30 +531,34 @@ button:active {
 }
 
 .dialog-icon {
-    font-size: 60px;
+    font-size: 50px;
     color: #4CAF50;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .dialog-content h3 {
     color: #1a2a6c;
-    margin-bottom: 15px;
-    font-size: 24px;
+    margin-bottom: 12px;
+    font-size: 22px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .dialog-content p {
     color: #555;
-    margin-bottom: 25px;
-    line-height: 1.6;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .dialog-button {
     background: linear-gradient(to right, #4CAF50, #2E7D32);
     color: white;
     border: none;
-    padding: 12px 25px;
+    padding: 10px 20px;
     border-radius: 50px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
