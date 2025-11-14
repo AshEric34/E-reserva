@@ -36,10 +36,21 @@ STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
 # ALLOWED_HOSTS = ['*']
 
 # Security settings for Railway
-DEBUG = os.environ.get("DEBUG", "True") == "True"
-ENV = os.environ.get("ENV", "development")  # dev ou prod
+# Meilleure détection de l'environnement
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+RAILWAY_ENVIRONMENT = os.environ.get("RAILWAY_ENVIRONMENT", "local")
 
-if ENV == "production":
+# ALLOWED_HOSTS pour tous les environnements
+ALLOWED_HOSTS = [
+    'e-reserva-production.up.railway.app',
+    '127.0.0.1', 
+    'localhost',
+    '.railway.app',
+    '.up.railway.app'
+]
+
+# Configuration sécurité uniquement en production Railway
+if RAILWAY_ENVIRONMENT != "local" and not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -48,11 +59,6 @@ else:
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
-
-
-
-ALLOWED_HOSTS = ['e-reserva-production.up.railway.app', '127.0.0.1', 'localhost']
-DEBUG = True
 
 AUTH_USER_MODEL = 'reservation.User'
 # Application definition
