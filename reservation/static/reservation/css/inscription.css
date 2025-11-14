@@ -225,6 +225,66 @@ input[type="date"] {
     transition: all 0.3s ease;
 }
 
+input[type="date"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+input[type="date"]:not(:valid):before {
+    content: attr(placeholder);
+    color: #aaa;
+    position: absolute;
+    left: 45px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* Style amélioré pour le champ date */
+.date-input-container {
+    position: relative;
+}
+
+.date-input-container input[type="date"] {
+    padding-right: 40px; /* Espace pour l'icône calendrier */
+}
+
+.date-calendar-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.date-text-input {
+    width: 100%;
+    padding: 10px 12px 10px 40px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    /* Forcer l'affichage du placeholder sur mobile */
+    input[type="date"]::before {
+        content: attr(placeholder);
+        color: #aaa;
+        margin-right: 10px;
+    }
+
+    /* Cacher le placeholder quand la date est sélectionnée */
+    input[type="date"]:valid::before {
+        display: none;
+    }
+}
+
 input:focus {
     outline: none;
     border-color: #ffdd40;
