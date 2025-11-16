@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime
+from cloudinary.models import CloudinaryField
 # Create your models here
 
 #--------TABLE UTILISATEUR-------------
@@ -31,7 +32,7 @@ class Cooperative(models.Model):
     adresse = models.CharField(max_length=255)
     telephone = models.CharField(max_length=10)
     email = models.EmailField()
-    photo = models.ImageField(upload_to='media/', null=True, blank=True)
+    photo = CloudinaryField('image', folder='cooperatives/', null=True, blank=True)
 
 
     def __str__(self):
@@ -56,7 +57,7 @@ class Voiture(models.Model):
     marque = models.CharField(max_length=100)
     place = models.IntegerField()
     matricule = models.CharField(max_length=50, unique=True)
-    photo = models.ImageField(upload_to='images/', null=True, blank=True)
+    photo = CloudinaryField('image', folder='voitures/', null=True, blank=True)  
     
 
     def __str__(self):
@@ -74,7 +75,7 @@ class Chauffeur(models.Model):
     cin = models.CharField(max_length=100)
     date_naissance = models.DateField()
     lieu_naissance = models.CharField(max_length=50)
-    photo = models.ImageField(upload_to='images/', null=True, blank=True, default="default.png")
+    photo = CloudinaryField('image', folder='chauffeurs/', null=True, blank=True, default="default.png") 
 
     def __str__(self):
         return f"{self.prenom} {self.nom}"

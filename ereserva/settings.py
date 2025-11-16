@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 from dotenv import load_dotenv
 load_dotenv()  # Charger les variables d'environnement depuis le fichier .env
@@ -169,11 +172,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Configuration Cloudinary optimisée
 CLOUDINARY_STORAGE = {
-    "CLOUDINARY_URL": os.environ.get("CLOUDINARY_URL")
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+# Si CLOUDINARY_URL existe, elle prime sur tout
+if os.environ.get('CLOUDINARY_URL'):
+    print("✅ Cloudinary configuré via CLOUDINARY_URL")
+elif all([CLOUDINARY_STORAGE['CLOUD_NAME'], CLOUDINARY_STORAGE['API_KEY'], CLOUDINARY_STORAGE['API_SECRET']]):
+    # Configuration manuelle seulement si les 3 variables sont présentes
+    import cloudinary
+    cloudinary.config(
+        cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+        api_key=CLOUDINARY_STORAGE['API_KEY'],
+        api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+        secure=True
+    )
+    print("✅ Cloudinary configuré via variables séparées")
+else:
+    print("⚠️  Cloudinary non configuré - vérifiez les variables d'environnement")
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
