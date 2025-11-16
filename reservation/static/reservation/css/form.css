@@ -24,14 +24,13 @@
       width: 200%;
       height: 200%;
       background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-      animation: pulse 15s infinite linear;
     }
 
-    @keyframes pulse {
+    /* @keyframes pulse {
       0% { transform: translate(0, 0) rotate(0deg); }
       50% { transform: translate(-10px, -10px) rotate(180deg); }
       100% { transform: translate(0, 0) rotate(360deg); }
-    }
+    } */
 
     /* ===== CONTENEUR PRINCIPAL ===== */
     .form-container {
@@ -58,7 +57,7 @@
     }
 
     /* Effet de brillance */
-    .form-container::before {
+    /* .form-container::before {
       content: '';
       position: absolute;
       top: -50%;
@@ -66,15 +65,13 @@
       width: 200%;
       height: 200%;
       background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transform: rotate(45deg);
-      animation: shine 6s infinite linear;
       pointer-events: none;
-    }
+    } */
 
-    @keyframes shine {
+    /* @keyframes shine {
       0% { transform: rotate(45deg) translateX(-100%); }
       100% { transform: rotate(45deg) translateX(100%); }
-    }
+    } */
 
     /* ===== EN-TÊTE AVEC LOGO ===== */
     .form-header {
@@ -108,13 +105,8 @@
       background: linear-gradient(45deg, #ffdd40, #ffa500, #ffdd40);
       border-radius: 50%;
       z-index: -1;
-      animation: rotate 3s linear infinite;
     }
 
-    @keyframes rotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
 
     .logo:hover {
       transform: scale(1.1) rotate(5deg);
@@ -404,12 +396,6 @@
       margin-right: 10px;
       font-size: 18px;
       flex-shrink: 0;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
     }
 
     /* ===== RESPONSIVE AMÉLIORÉ ===== */

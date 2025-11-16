@@ -70,6 +70,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'reservation',
 ]
 
@@ -167,7 +169,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CLOUDINARY_STORAGE = {
+    "CLOUDINARY_URL": os.environ.get("CLOUDINARY_URL")
+}
 
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -193,7 +199,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Ajoute le chemin de ton app reservation
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Garde si tu as des statics à la racine
+    BASE_DIR / "static",  
     BASE_DIR / "reservation" / "static", 
 ]
 
