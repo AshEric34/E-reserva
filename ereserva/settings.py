@@ -181,7 +181,7 @@ CLOUDINARY_STORAGE = {
 
 # Si CLOUDINARY_URL existe, elle prime sur tout
 if os.environ.get('CLOUDINARY_URL'):
-    print("✅ Cloudinary configuré via CLOUDINARY_URL")
+    print(" Cloudinary configuré via CLOUDINARY_URL")
 elif all([CLOUDINARY_STORAGE['CLOUD_NAME'], CLOUDINARY_STORAGE['API_KEY'], CLOUDINARY_STORAGE['API_SECRET']]):
     # Configuration manuelle seulement si les 3 variables sont présentes
     import cloudinary
@@ -191,10 +191,9 @@ elif all([CLOUDINARY_STORAGE['CLOUD_NAME'], CLOUDINARY_STORAGE['API_KEY'], CLOUD
         api_secret=CLOUDINARY_STORAGE['API_SECRET'],
         secure=True
     )
-    print("✅ Cloudinary configuré via variables séparées")
+    print(" Cloudinary configuré via variables séparées")
 else:
-    print("⚠️  Cloudinary non configuré - vérifiez les variables d'environnement")
-
+    print("  Cloudinary non configuré - vérifiez les variables d'environnement")
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Internationalization
