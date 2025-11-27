@@ -170,15 +170,34 @@ class ChauffeurForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         cooperative = kwargs.pop('cooperative', None)
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         # Toujours désactiver la coopérative
         self.fields['cooperative'].disabled = True  
 
-        if cooperative:
+        if user and hasattr(user, "cooperative"):
+            # Récupérer la coopérative de l'utilisateur connecté
+            cooperative_user = Cooperative.objects.get(utilisateur=user)
+            
+            # 1. Filtrer et définir la coopérative d'abord
+            self.fields["cooperative"].queryset = Cooperative.objects.filter(pk=cooperative_user.pk)
+            self.fields["cooperative"].initial = cooperative_user
+            
+            # 2. Ensuite filtrer les voitures de cette coopérative
+            self.fields["voiture"].queryset = Voiture.objects.filter(cooperative=cooperative_user)
+
+        # Si une coopérative est passée en paramètre (pour override)
+        elif cooperative:
             self.fields['cooperative'].initial = cooperative
+            # Filtrer aussi les voitures pour cette coopérative
+            self.fields["voiture"].queryset = Voiture.objects.filter(cooperative=cooperative)
+
+        # Si c'est une modification d'instance existante
         elif self.instance and self.instance.pk:
             self.fields['cooperative'].initial = self.instance.cooperative
+            # Filtrer les voitures pour la coopérative de l'instance
+            self.fields["voiture"].queryset = Voiture.objects.filter(cooperative=self.instance.cooperative)
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -222,10 +241,10 @@ class TrajetForm(forms.ModelForm):
         if user and hasattr(user, "cooperative"):
             cooperative = Cooperative.objects.get(utilisateur=user)
 
-            # ✅ Filtrer uniquement les voitures de la coopérative connectée
+            #  Filtrer uniquement les voitures de la coopérative connectée
             self.fields["voiture"].queryset = Voiture.objects.filter(cooperative=cooperative)
 
-            # ✅ Fixer la coopérative automatiquement (un seul choix possible)
+            #  Fixer la coopérative automatiquement (un seul choix possible)
             self.fields["cooperative"].queryset = Cooperative.objects.filter(pk=cooperative.pk)
             self.fields["cooperative"].initial = cooperative
             self.fields["cooperative"].disabled = True # empêche de modifier

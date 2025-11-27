@@ -449,7 +449,7 @@ def generate_cooperative_ticket_pdf(user, cooperative, password):
     # Nom de la coopérative
     p.setFillColorRGB(0, 0, 0)
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(15, y_position, "Nom:")
+    p.drawString(15, y_position, "Nom: ")
     p.setFont("Helvetica", 8)
     p.drawString(40, y_position, cooperative.nom[:25])  # Limiter la longueur
     
@@ -457,7 +457,7 @@ def generate_cooperative_ticket_pdf(user, cooperative, password):
     
     # Email
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(15, y_position, "Email:")
+    p.drawString(15, y_position, "Email: ")
     p.setFont("Helvetica", 8)
     p.drawString(40, y_position, cooperative.email[:25])
     
@@ -465,7 +465,7 @@ def generate_cooperative_ticket_pdf(user, cooperative, password):
     
     # Téléphone
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(15, y_position, "Téléphone:")
+    p.drawString(15, y_position, "Téléphone: ")
     p.setFont("Helvetica", 8)
     p.drawString(55, y_position, cooperative.telephone)
     
@@ -473,7 +473,7 @@ def generate_cooperative_ticket_pdf(user, cooperative, password):
     
     # Adresse (tronquée)
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(15, y_position, "Adresse:")
+    p.drawString(15, y_position, "Adresse: ")
     p.setFont("Helvetica", 7)
     address_lines = cooperative.adresse.split()[:6]  # Prendre les premiers mots
     truncated_address = ' '.join(address_lines)
@@ -497,7 +497,7 @@ def generate_cooperative_ticket_pdf(user, cooperative, password):
     # Nom d'utilisateur
     p.setFillColorRGB(0, 0, 0)
     p.setFont("Helvetica-Bold", 9)
-    p.drawString(15, y_position, "Utilisateur:")
+    p.drawString(15, y_position, "Utilisateur: ")
     p.setFont("Helvetica", 9)
     p.drawString(60, y_position, user.username)
     
@@ -505,15 +505,24 @@ def generate_cooperative_ticket_pdf(user, cooperative, password):
     
     # Mot de passe
     p.setFont("Helvetica-Bold", 9)
-    p.drawString(15, y_position, "Mot de passe:")
+    p.drawString(15, y_position, "Mot de passe: ")
+    y_position -= 10  # Descendre pour le mot de passe
     p.setFont("Helvetica", 9)
     p.setFillColorRGB(*warning_color)
-    p.drawString(60, y_position, password)
+
+    max_password_length = 20
+    if len(password) > max_password_length:
+        displayed_password = password[:max_password_length] + "..."
+    else:
+        displayed_password = password
+    
+    p.drawString(15, y_position, displayed_password)  # Commencer depuis la gauche
     
     # Retour au noir pour la suite
     p.setFillColorRGB(0, 0, 0)
     
-    y_position -= 15
+    y_position -= 15  # Espace supplémentaire après le mot de passe
+    
     
     # URL de connexion
     p.setFont("Helvetica-Bold", 8)
@@ -1229,8 +1238,11 @@ def ticket_pdf(request, reservation_id):
         p.setLineWidth(0.5)
         
         from django.utils import timezone
+        import pytz
         
-        # CORRECTION : Gérer les différents types de champs de date
+        # Forcer le fuseau horaire de Madagascar
+        madagascar_tz = pytz.timezone('Indian/Antananarivo')
+        date_reservation_local = reservation.date_reservation.astimezone(madagascar_tz)
         # date_reservation est un DateTimeField
         date_reservation_local = timezone.localtime(reservation.date_reservation)
         
@@ -1257,8 +1269,9 @@ def ticket_pdf(request, reservation_id):
         y -= 15
         p.setFont("Helvetica-Bold", 8)
         p.drawString(10, y, "Réservé le:")
+        y -= 10  # Descendre pour la date
         p.setFont("Helvetica", 8)
-        p.drawString(40, y, f"{date_reservation_local.strftime('%d/%m/%Y à %H:%M')}")
+        p.drawString(10, y, f"{date_reservation_local.strftime('%d/%m/%Y à %H:%M')}")
         
         # Ligne séparatrice
         y -= 10
