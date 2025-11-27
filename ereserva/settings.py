@@ -220,10 +220,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Ajoute le chemin de ton app reservation
-STATICFILES_DIRS = [
-    BASE_DIR / "static",  
-    BASE_DIR / "reservation" / "static", 
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",  
+#     BASE_DIR / "reservation" / "static", 
+# ]
 
 # Dossiers supplémentaires contenant des fichiers statiques en développement
 
